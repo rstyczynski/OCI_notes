@@ -16,6 +16,8 @@ At tenancy level below myst be ready:
 3. you must belong to a group with all required IAM access privileges.
 
 ## Helper functions
+To make bastion use easier, I created bash functions automating all the steps incl. ssh key creation. Note that this code creates one time ssh key, what should be ok for all of us, as there is no reason to use own own keys for this purpose.
+
 Copy paste below functions to your shell session ore register them in your bash_profile. Both are used to handle all the bastion mechanics:
 1. getBastionSession - initializes the session
 2. connectTroughBastion - connects to the target
