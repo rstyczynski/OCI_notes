@@ -86,25 +86,31 @@ function connectTroughBastion {
 Specify oci profile name and optionally https proxy if your connection needs it. You need to know your OCI Bastion OCID identifier. 
 
 ```
-# export https_proxy=
-# oci_profile=
+https_proxy=your_value
+oci_profile=your_value
 
-bastion_ocid=<provide>
+bastion_ocid=ocid1.bastion.region.id
+_EOF
 ```
 
 Connecting to the target you need to know username and target compute instance OCID. IP is not required here, as is discovered by the Bastion itself. Session name will be used as bastion session name to be visible in e.g. console. This name is used to store data in temporary files used by local functions to handle all the mechanics.
 
 ```
-session_name=host1
+session_name=your_value
 
-target_username=<provide>
+target_username=your_value
 
-target_ocid=<provide>
+target_ocid=ocid1.instance.region.id
 ```
 
 Having above you need to request the session. Session may be requested in sync mode, what means that command will be blocked until session is ready. Regular mode works in async mode, jut making sure that the request is accepted, what will be better when you need to establish multiple sessions at once.
 
 ```
+oci compute instance action --profile $oci_profile \
+--instance-id $target_ocid \
+--action START \
+--wait-for-state Running
+
 getBastionSession sync
 ```
 
@@ -115,3 +121,20 @@ To connect the the target use connectTroughBastion function with optional sessio
 connectTroughBastion $session_name
 ```
 
+## Clean up
+Delete the session.
+
+```
+oci bastion session delete \
+--profile $oci_profile \
+--session-id $(cat ~/oci/bastion/session/$session_name.ocid)
+```
+
+, and stop the instance if needed.
+
+```
+oci compute instance action \
+--profile $oci_profile \
+--instance-id $target_ocid \
+--action STOP
+```
