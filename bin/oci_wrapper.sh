@@ -29,7 +29,7 @@ Output:
 * variable tenancy_name
 * variable tenancy_region_key
 _function_info
-function get_tenancy {
+function discover_tenancy {
 
     test -z "$OCI_CLI_PROFILE" && OCI_CLI_PROFILE=DEFAULT
 
@@ -83,7 +83,7 @@ function get_compartment_id {
     local cmp_path=$(echo "$cmp_path_URI" | tr ' #%&{}\\<>' '_')
 
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
 
     local base_dir=$tenancy_home/iam/compartment
@@ -183,7 +183,7 @@ Input:
 Output:
 * files \$tenancy_home/iam/compartment with ocid and json describing compartments
 _function_info
-function get_compartments {
+function discover_compartments {
     local cmp_path=$1
     local background_count_max=$2
     local ttl=$3
@@ -191,7 +191,7 @@ function get_compartments {
     : "${ttl:=43200}"
 
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
 
     local cmp_id=""
@@ -227,7 +227,7 @@ function get_compartments {
         local background_count=0
         for cmp_name in $(jq -r '.data[].name' "$compartment_base"/list); do
             if [ ! -z "$background_count_max" ] && [ "$background_count_max" -gt 0 ]; then
-                get_compartments "${cmp_path}/$cmp_name" "$background_count_max" &
+                discover_compartments "${cmp_path}/$cmp_name" "$background_count_max" &
                 
                 background_count=$((background_count + 1))
                 if [ $background_count -eq "$background_count_max" ]; then
@@ -236,7 +236,7 @@ function get_compartments {
                     background_count=0
                 fi
             else
-                get_compartments "${cmp_path}/$cmp_name"
+                discover_compartments "${cmp_path}/$cmp_name"
             fi 
         done
     fi
@@ -272,7 +272,7 @@ function get_bastion_id {
 
     # prepare tenency cache directory etc.
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
 
     local base_dir=$tenancy_home/bastion
@@ -317,7 +317,7 @@ Input:
 Output:
 * compartment path
 _function_info
-function set_working_compartment() {
+function set_working_compartment {
     local working_compartment=$1
 
     local ocid=$(get_compartment_id "$working_compartment")
@@ -341,13 +341,13 @@ Input:
 Output:
 * compartment path
 _function_info
-function get_working_compartment() {
+function get_working_compartment {
     local compartment
 
     local session_home=~/.oci/oc/session
 
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
  
     if [ -f "$session_home/${tenancy_realm}_${tenancy_name}/compartment" ]; then
@@ -369,7 +369,7 @@ Input:
 Output:
 * ocid
 _function_info
-function get_working_compartment_id() {
+function get_working_compartment_id {
     local ocid
 
     ocid=$(get_compartment_id "$(get_working_compartment)")
@@ -391,7 +391,7 @@ function oci_autocomplete {
     local _last=$3
 
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
 
     if [ "$_last" == oci ]; then
@@ -458,7 +458,7 @@ function oc {
     value=$4
 
     if [ -z "$tenancy_home" ]; then
-        get_tenancy
+        discover_tenancy
     fi
     
     case "$family $resource $operation" in
