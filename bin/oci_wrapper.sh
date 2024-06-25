@@ -106,8 +106,8 @@ function get_compartment_id {
 
         # get root compartment id
         compartment_id=$tenancy_id
-        if [ ! -s "${base_dir}${cmp_dynamic_path}"/ocid ]; then
-            echo "$compartment_id" > "${base_dir}${cmp_dynamic_path}"/ocid
+        if [ ! -s "${base_dir}${cmp_dynamic_path}/ocid" ]; then
+            echo  "$compartment_id"  > "${base_dir}${cmp_dynamic_path}/ocid"
         fi
  
         if [ ! -s "${base_dir}${cmp_dynamic_path}"/list ]; then
@@ -121,19 +121,19 @@ function get_compartment_id {
             cmp_dynamic_path=$cmp_dynamic_path/$cmp
             mkdir -p "${base_dir}${cmp_dynamic_path}"
 
-            if [ -s "${base_dir}${cmp_dynamic_path}"/ocid ]; then
-                compartment_id=$(<"${base_dir}${cmp_dynamic_path}"/ocid)
+            if [ -s "${base_dir}${cmp_dynamic_path}/ocid" ]; then
+                compartment_id=$(<"${base_dir}${cmp_dynamic_path}/ocid")
             else
-                if [ ! -s "${base_dir}${cmp_dynamic_path}"/../list ]; then
+                if [ ! -s "${base_dir}${cmp_dynamic_path}/../list" ]; then
                     oci iam compartment list \
-                    --compartment-id"$compartment_id"> "${base_dir}${cmp_dynamic_path}"/../list || rm "${base_dir}${cmp_dynamic_path}"/../list
+                    --compartment-id "$compartment_id" > "${base_dir}${cmp_dynamic_path}/../list" || rm "${base_dir}${cmp_dynamic_path}/../list"
                 fi
 
-                if [ -s "${base_dir}${cmp_dynamic_path}"/../list ]; then
-                    compartment_id=$(jq --arg name "$cmp" -r '.data[] | select(.name == $name).id' "${base_dir}${cmp_dynamic_path}"/../list)
+                if [ -s "${base_dir}${cmp_dynamic_path}/../list" ]; then
+                    compartment_id=$(jq --arg name "$cmp" -r '.data[] | select(.name == $name).id' "${base_dir}${cmp_dynamic_path}/../list")
                     
-                    if [ ! -z "$compartment_id" ]; then
-                        echo -n"$compartment_id"> "${base_dir}${cmp_dynamic_path}"/ocid
+                    if [ ! -z  "$compartment_id"  ]; then
+                        echo -n  "$compartment_id" > "${base_dir}${cmp_dynamic_path}/ocid"
                     else
                         echo "Error retrieving compartment id for ${cmp_dynamic_path}." >&2
                         rm -rf "${base_dir}${cmp_dynamic_path}"
@@ -145,7 +145,7 @@ function get_compartment_id {
             fi
         done
     fi
-    echo "$compartment_id"
+    echo  "$compartment_id" 
 }
 
 # by ocid
@@ -188,7 +188,12 @@ function discover_compartments {
     local background_count_max=$2
     local ttl=$3
 
-    : "${ttl:=43200}"
+    # shellcheck disable=SC2223
+    : ${cmp_path:=/}
+    # shellcheck disable=SC2223
+    : ${background_count_max:=10}
+    # shellcheck disable=SC2223
+    : ${ttl:=43200}
 
     if [ -z "$tenancy_home" ]; then
         discover_tenancy
@@ -210,22 +215,22 @@ function discover_compartments {
 
     echo "Preparing for data refresh..."
     mkdir -p "$compartment_base"
-    find "$compartment_base"-maxdepth 1 -name "list" -mmin +"$ttl" -exec sh -c 'echo "|- deleting: $1" && rm "$1"' _ {} \;
+    find "$compartment_base" -maxdepth 1 -name "list" -mmin +"$ttl" -exec sh -c 'echo "|- deleting: $1" && rm "$1"' _ {} \;
     echo "\- OK"
 
-    if [ -s "$compartment_base"/list ]; then
+    if [ -s "$compartment_base/list" ]; then
         echo "Compartment list for ${cmp_path} is available..."
         echo "\- ocid: $cmp_id"
     else
         echo "Getting compartment list for ${cmp_path}..."
         echo "\- ocid: $cmp_id"
         mkdir -p "$compartment_base"
-        oci iam compartment list --compartment-id "$cmp_id" > "$compartment_base"/list || rm "$compartment_base"/list
+        oci iam compartment list --compartment-id "$cmp_id" > "$compartment_base/list" || rm "$compartment_base/list"
     fi
 
-    if [ -s "$compartment_base"/list ]; then
+    if [ -s "$compartment_base/list" ]; then
         local background_count=0
-        for cmp_name in $(jq -r '.data[].name' "$compartment_base"/list); do
+        for cmp_name in $(jq -r '.data[].name' "$compartment_base/list"); do
             if [ ! -z "$background_count_max" ] && [ "$background_count_max" -gt 0 ]; then
                 discover_compartments "${cmp_path}/$cmp_name" "$background_count_max" &
                 
@@ -290,7 +295,7 @@ function get_bastion_id {
     else
         oci bastion bastion list \
         --all \
-        --compartment-id"$compartment_id"> "${bastion_dir}"/../bastion_list \
+        --compartment-id "$compartment_id" > "${bastion_dir}"/../bastion_list \
         || rm "${bastion_dir}"/../bastion_list 
 
         if [ -s "${bastion_dir}/../bastion_list" ]; then
@@ -418,7 +423,7 @@ function oci_autocomplete {
                     # shellcheck disable=SC2207
                     # shellcheck disable=SC2164
                     # shellcheck disable=SC2046
-                    COMPREPLY=( $(for word in $(cd "$tenancy_home"/iam/compartment; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
+                    COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
                 #fi
             else
                 # shellcheck disable=SC2207
@@ -434,7 +439,8 @@ function oci_autocomplete {
                 # shellcheck disable=SC2207
                 # shellcheck disable=SC2164
                 # shellcheck disable=SC2046
-                COMPREPLY=( $(for word in $(cd "$tenancy_home"/iam/compartment; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
+                # shellcheck disable=SC2086
+                COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo /$word; done) )
             fi
 
         fi
