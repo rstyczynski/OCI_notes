@@ -24,7 +24,7 @@ Here is example of bastion service located in meet-me-room compartment under pro
 /prod/meet-me-room/bastion
 ```
 
-Now the only trick is to provide tool to convert path style into ocid.
+Now the only trick is to provide a tool to convert OCI path into ocid.
 
 ## Simple auto-complete
 
