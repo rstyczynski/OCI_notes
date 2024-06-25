@@ -1,13 +1,19 @@
 #!/bin/bash
 export OCI_CLI_PROFILE=gc3
 
+# discover tenancy
 rm -rf ~/.oci/objects/tenancy
+discover_tenancy
 
 # discover single compartment
 get_compartment_id /
 get_compartment_id /GC3IsolatedLabs
 get_compartment_id /GC3IsolatedLabs/ECCC
 get_compartment_id /GC3IsolatedLabs/ECCC/RYSZARD_STYCZYNSKI
+
+# discover compartment with auto tenency discovery
+rm -rf ~/.oci/objects/tenancy
+get_compartment_id /GC3IsolatedLabs
 
 # working compartment
 set_working_compartment /
@@ -17,10 +23,10 @@ oc iam compartment set /GC3IsolatedLabs/ECCC
 get_compartment_id .
 
 # discover all compartment
-get_compartments / 10
-get_compartments /GC3IsolatedLabs/ECCC/RYSZARD_STYCZYNSKI
+discover_compartments / 10
+discover_compartments /GC3IsolatedLabs/ECCC/RYSZARD_STYCZYNSKI
 
-get_compartments / 10 0
+discover_compartments / 10 0
 # shellcheck disable=SC2154
 tree "$tenancy_home/iam/compartment"
 find "$tenancy_home/iam/compartment" -type d | sed "s|^$tenancy_home/iam/compartment||g"

@@ -31,3 +31,18 @@ Most probably it's possible and convenient to use OCI search service, but such t
 
 Tenancy discovery is started with reading OCI CLI connection descriptor located at ~/.oci/profile. 
 
+```bash
+mkdir -p ~/.oci/bin
+curl -s https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/bin/oci_wrapper.sh > ~/.oci/bin/oci_wrapper.sh
+source ~/.oci/bin/oci_wrapper.sh
+```
+
+Once sourced you can discover your tenancy.
+
+```bash
+discover_tenancy
+```
+
+
+
+
