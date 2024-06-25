@@ -79,13 +79,44 @@ Error. Compartment cache not ready. Discover compartments first.
 ```
 
 ## Compartment discovery
+Compartment discovery traverses all compartments starting at root level, to store ocid and sub-compartment json files in tenancy cache directory. Process is initiated by just invoking one function. Discovery work in multi process mode, and may take some time depending on the size of the tenancy. You may influence starting point and number of workers, but on this stage it's not important. Let's assume that your tenancy is not massive and process will take no more than a minute.
 
 ```
-discover_compartments / 
+discover_compartments
 ```
 
+## Autocomplete on steroids
+Now you can use auto-complete on steroids with path support.
 
-## Tenancy discovery
+```
+oci compute instance list --compartment-id
+```
+... press TAB to notice that / is added.
+
+```
+oci compute instance list --compartment-id /
+```
+... press TAB twice, to see list of your root level compartments.
+
+```
+oci compute instance list --compartment-id /
+/prod            /ManagedCompartmentForPaaS  
+```
+
+Now you can work with autocomplete in the same way you used to work with directories.
+
+```
+oci compute instance list --compartment-id /prod/meet-me-room
+```
+
+Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
+
+## Internals
+
+### oci wrapper
+TODO
+
+### Tenancy discovery
 Most probably it's possible and convenient to use OCI search service, but such technique requires API calls each time conversion is needed. To eliminate it some kind of cache mechanism must be in place, and it's the direction I decided to follow. I made such decision inspired by similar technique used by Kevin Colwell - o command's inventor.
 
 Tenancy discovery is started with reading OCI CLI connection descriptor located at ~/.oci/profile. 
