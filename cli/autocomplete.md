@@ -112,35 +112,4 @@ oci compute instance list --compartment-id /prod/meet-me-room
 Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
 
 ## Internals
-
-### oci wrapper
 TODO
-
-### Tenancy discovery
-Most probably it's possible and convenient to use OCI search service, but such technique requires API calls each time conversion is needed. To eliminate it some kind of cache mechanism must be in place, and it's the direction I decided to follow. I made such decision inspired by similar technique used by Kevin Colwell - o command's inventor.
-
-Tenancy discovery is started with reading OCI CLI connection descriptor located at ~/.oci/profile. 
-
-
-Once sourced you can discover your tenancy.
-
-```bash
-discover_tenancy
-```
-
-, after a while you will see the data, where critical information is cache_home, as this location will be used to keep all tenancy cached data. 
-
-```
-Tenancy context prepared.
-\- id:    ocid1.tenancy.oc1.....
-\- realm: oc1
-\- name:  my_cloud
-\- region key: FRA
-\- cache home: /Users/rstyczynski/.oci/objects/tenancy/oc1/my_cloud
-```
-Notice that cache directory has OCI realm in the structure, what makes it possible to work with tenancies in different realm, even when tenancy names are the same. Quite unlikely situation indeed, but it's better not to be surprised in the future.
-
-## OCI connection
-OCI CLI works with OCI connection specified in ~/.oci/profile; by default DEFAULT profile is used, but you may speci
-
-
