@@ -16,7 +16,8 @@ o has a power to influence user showing by example how to be creative around OCI
 ## OCI resource path
 OCI resource model is strictly related to compartments. This great virtualization of server rooms' access control adds breaking trough flexibility for resource distribution in the OCI tenancy, for the price of dealing with long and boring OCI identifiers - ocids. 
 
-During my tool developments I discovered that it's an interesting idea to apply URI concept to address OCI resources. Each resource must exist in one and only one compartment, so URI may be applied; to make it simpler I'll decide to use regular Linux directory path.
+> [!Note]
+> During my tool developments I discovered that it's an interesting idea to apply URI concept to address OCI resources. Each resource must exist in one and only one compartment, so URI may be applied; to make it simpler I'll decide to use regular Linux directory path.
 
 Here is example of bastion service located in meet-me-room compartment under prod compartment. 
 
@@ -109,7 +110,8 @@ Now you can work with autocomplete in the same way you used to work with directo
 oci compute instance list --compartment-id /prod/meet-me-room
 ```
 
-Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
+> [!Note]
+> Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
 
 ## Internals
 TODO
