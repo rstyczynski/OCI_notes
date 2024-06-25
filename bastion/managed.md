@@ -92,7 +92,6 @@ https_proxy=your_value
 oci_profile=your_value
 
 bastion_ocid=ocid1.bastion.region.id
-_EOF
 ```
 
 Connecting to the target you need to know username and target compute instance OCID. IP is not required here, as is discovered by the Bastion itself. Session name will be used as bastion session name to be visible in e.g. console. This name is used to store data in temporary files used by local functions to handle all the mechanics.
@@ -132,11 +131,19 @@ oci bastion session delete \
 --session-id $(cat ~/oci/bastion/session/$session_name.ocid)
 ```
 
-, and stop the instance if needed.
+, and stop the instance if required.
 
 ```
 oci compute instance action \
 --profile $oci_profile \
 --instance-id $target_ocid \
 --action STOP
+```
+
+If not needed terminate the compute instance.
+
+```
+oci compute instance terminate \
+--profile $oci_profile \
+--instance-id $target_ocid
 ```
