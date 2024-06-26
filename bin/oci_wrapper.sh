@@ -15,7 +15,7 @@
 #
 # discover tenancy
 #
-
+function discover_tenancy {
 : <<'_function_info'
 Discovers parameters is the tenancy and sets tenancy cache home directory.
 
@@ -29,7 +29,6 @@ Output:
 * variable tenancy_name
 * variable tenancy_region_key
 _function_info
-function discover_tenancy {
 
     test -z "$OCI_CLI_PROFILE" && OCI_CLI_PROFILE=DEFAULT
 
@@ -68,6 +67,7 @@ function discover_tenancy {
     fi
 }
 
+function get_compartment_id {
 : <<'_function_info'
 Returns compartment if for given compartment path.
 
@@ -77,7 +77,7 @@ Input:
 Output:
 * ocid
 _function_info
-function get_compartment_id {
+
     local cmp_path_URI=$1
     # remove forbidden characters
     local cmp_path=$(echo "$cmp_path_URI" | tr ' #%&{}\\<>' '_')
@@ -149,6 +149,7 @@ function get_compartment_id {
 }
 
 # by ocid
+function get_compartment_path {
 : <<'_function_info'
 Converts ocid to compartment path operating in a cache data. Will not perform conversion for not discovered ocid.
 
@@ -158,7 +159,7 @@ Input:
 Output:
 * compartment path w.g. /abc/xyz
 _function_info
-function get_compartment_path {
+
     local ocid=$1
 
     if [[ "$ocid" == ocid1.compartment* ]]; then
@@ -172,6 +173,7 @@ function get_compartment_path {
 }
 
 # discover compartments
+function discover_compartments {
 : <<'_function_info'
 Discovers all subcompartments for given compartment root.
 
@@ -183,7 +185,7 @@ Input:
 Output:
 * files \$tenancy_home/iam/compartment with ocid and json describing compartments
 _function_info
-function discover_compartments {
+
     local cmp_path=$1
     local background_count_max=$2
     local ttl=$3
@@ -249,11 +251,92 @@ function discover_compartments {
     wait
 }
 
+function get_subcompartments {
+: <<'_function_info'
+Returns sub compartments for given compartment path. 
+
+Does not traverse path, which must exist in compartment cache, however gets fresh list of subcompartments if existing data is older then 1 minute.
+
+Input:
+* compartment path
+
+Output:
+* list of compartments
+_function_info
+
+    local cmp_path=$1
+
+    # handle relative compartment
+    if [[ "$cmp_path" == .* ]]; then
+        # shellcheck disable=SC2001
+        cmp_path=$(echo "$cmp_path" | sed "s|^\.|$(get_working_compartment)|")
+    fi
+
+    # validate path
+    path_regex="^/(\.?[^/ ]*)+(/[^/ ]+)*$"
+    if [[ ! $cmp_path =~ $path_regex ]] \
+    || [[ "$cmp_path" == *..* ]] ; then
+        echo "Error. Provide valid compartment path." >&2
+        return 1
+    fi
+
+    #TTL
+    if [ -s "$tenancy_home/iam/compartment${cmp_path}/list" ]; then
+        local ttl=1
+        echo "Preparing for data refresh..." >&2
+        find "$tenancy_home/iam/compartment${cmp_path}" -maxdepth 1 -name "list" -mmin +"$ttl" -exec sh -c 'echo "|- deleting: $1" && rm "$1"' _ {} \; >&2
+        echo "\- OK" >&2
+    fi
+
+    # get data if not available
+    if [ ! -s "$tenancy_home/iam/compartment${cmp_path}/list" ]; then
+        # shellcheck disable=SC2154
+        mkdir -p "$tenancy_home/iam/compartment${cmp_path}"
+        if ! oci iam compartment list --compartment-id "$cmp_path" > "$tenancy_home/iam/compartment${cmp_path}/list"; then
+            rm -rf "$tenancy_home/iam/compartment${cmp_path}"
+        fi
+    fi
+
+    if [ -s "$tenancy_home/iam/compartment${cmp_path}/list" ]; then
+        # shellcheck disable=SC2002
+        cat "$tenancy_home/iam/compartment${cmp_path}/list" | jq -r '.data[] | [.name, .id] | @tsv' | \
+        while read -r cmp_name ocid; do
+            echo "$cmp_name"
+            mkdir -p "$tenancy_home/iam/compartment${cmp_path}/${cmp_name}"
+            echo -n "$ocid" > "$tenancy_home/iam/compartment${cmp_path}/${cmp_name}/ocid"
+        done
+    fi
+}
+
+function get_compartments {
+: <<'_function_info'
+Returns sub compartments for given compartment path. Traverses full path from root, and rebuilds cache.
+
+Input:
+* compartment path
+
+Output:
+* list of compartments
+_function_info
+
+    local cmp_path=$1
+
+    local cmp_path_partial=''
+    get_subcompartments / >/dev/null 2>&1
+    for cmp in $(echo "$cmp_path" | tr '/' '\t'); do
+        cmp_path_partial=$cmp_path_partial/$cmp
+        get_subcompartments "$cmp_path_partial" >/dev/null 2>&1
+    done
+
+    get_subcompartments "$cmp_path"
+}
+
 #
 # bastion path2id
 #
+function get_bastion_id {
 : <<'_function_info'
-Returns bastion ocid for biven bastion path
+Returns bastion ocid for given bastion path
 
 Input:
 * bastion path
@@ -261,13 +344,13 @@ Input:
 Output:
 * ocid
 _function_info
-function get_bastion_id {
+
     local bastion_URL=$1
 
     # parameter test
     if [ -z "$bastion_URL" ] \
     || [ "$bastion_URL" != "$(dirname "$bastion_URL")/$(basename "$bastion_URL")" ] \
-    && [ ! "$bastion_URL" == "/$(basename "$bastion_URL")" ]; then
+    && [ ! "$bastion_URL" == "$(basename "$bastion_URL")" ]; then
         echo "Error. Provide valid bastion path - the name prefixed by compartment path."
         return 1
     fi
@@ -313,6 +396,7 @@ function get_bastion_id {
 #
 # set/get working compartment
 #
+function set_working_compartment {
 : <<'_function_info'
 Sets working compartment. Once stored you can use dot notation to refere to working compartment.
 
@@ -322,7 +406,7 @@ Input:
 Output:
 * compartment path
 _function_info
-function set_working_compartment {
+
     local working_compartment=$1
 
     local ocid=$(get_compartment_id "$working_compartment")
@@ -337,6 +421,7 @@ function set_working_compartment {
     cat "$session_home/${tenancy_realm}_${tenancy_name}/compartment"
 }
 
+function get_working_compartment {
 : <<'_function_info'
 Returns working compartment. 
 
@@ -346,7 +431,7 @@ Input:
 Output:
 * compartment path
 _function_info
-function get_working_compartment {
+
     local compartment
 
     local session_home=~/.oci/oc/session
@@ -365,6 +450,7 @@ function get_working_compartment {
 }
 alias pwc=get_working_compartment
 
+function get_working_compartment_id {
 : <<'_function_info'
 Returns working compartment's ocid.
 
@@ -374,7 +460,7 @@ Input:
 Output:
 * ocid
 _function_info
-function get_working_compartment_id {
+
     local ocid
 
     ocid=$(get_compartment_id "$(get_working_compartment)")
@@ -386,11 +472,12 @@ alias pwc_id=get_working_compartment_id
 #
 # OCI autocomplete with compartment support
 #
+function oci_autocomplete {
 : <<'_function_info'
 Autocomplete support of oci CLI. Supports path autocomplete for --compartment-id paramter.
 
 _function_info
-function oci_autocomplete {
+
     local _cmd=$1
     local _this=$2
     local _last=$3
@@ -416,6 +503,7 @@ function oci_autocomplete {
                 #    session_pwc=$(get_working_compartment)
                 #    COMPREPLY=( ./$(cd ~/.oci/objects/tenancy/$tenancy_realm/$tenancy_name/iam/compartment$session_pwc; compgen -d -- $(echo $_this | sed 's|^\.||') ) )
                 #else
+                    get_compartments "/$_this" >/dev/null 2>/dev/null 
                     if [ ! -d "$tenancy_home"/iam/compartment ]; then
                         echo "Error. Compartment cache not ready. Discover compartments first." >&2
                         return 1
@@ -432,6 +520,7 @@ function oci_autocomplete {
             fi
 
             if [ "$_last" == '--compartment-id' ]; then
+                get_compartments "/$_this" >/dev/null 2>/dev/null 
                 if [ ! -d "$tenancy_home"/iam/compartment ]; then
                     echo "Error. Compartment cache not ready. Discover compartments first." >&2
                     return 1
@@ -445,7 +534,6 @@ function oci_autocomplete {
 
         fi
     fi
-   
 }
 complete -F oci_autocomplete oci
 
@@ -453,15 +541,16 @@ complete -F oci_autocomplete oci
 # skeleton for oci wrapper with:
 # 1. set working compartment support
 #
+function oc {
 : <<'_function_info'
 oci CLI extension to be used by oci CLI wrapper.
 
 _function_info
-function oc {
-    family=$1 
-    resource=$2
-    operation=$3
-    value=$4
+
+    local family=$1 
+    local resource=$2
+    local operation=$3
+    local value=$4
 
     if [ -z "$tenancy_home" ]; then
         discover_tenancy
@@ -476,12 +565,13 @@ function oc {
 #
 # OCI wrapper to handle compartment URL
 #
+function oci { 
 : <<'_function_info'
 Wraper of oci CLI with support for:
 1. iam compartment set - to set working compartment.
 2. replace compartment path into ocid
 _function_info
-function oci { 
+
     if [ "$1 $2 $3" == "iam compartment set" ]; then
         oc iam compartment set "$4"
     else
