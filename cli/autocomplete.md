@@ -27,7 +27,7 @@ Here is example of bastion service located in meet-me-room compartment under pro
 
 Now the only trick is to provide a tool to convert OCI path into ocid.
 
-## Simple auto-complete
+## OCI CLI auto-complete
 
 Let' play with simple OCI CLI autocomplete. Load the source code and source it. It's assumed you are using bash. I do not know how and if this autocomplete works with other shells.
 
