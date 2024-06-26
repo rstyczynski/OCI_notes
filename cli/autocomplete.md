@@ -67,51 +67,35 @@ oci compute inst
 oci compute instance list
 ```
 
-... press TAB
+... press TAB, TAB
 
 ```
 oci compute instance list --compartment-id
 ```
 
-You reached the limit of foundation level auto complete. When you'll press TAB in this context you will be notified that:
-
-```
-Error. Compartment cache not ready. Discover compartments first.
-```
-
-## Compartment discovery
-Compartment discovery traverses all compartments starting at root level, to store ocid and sub-compartment json files in tenancy cache directory. Process is initiated by just invoking one function. Discovery work in multi process mode, and may take some time depending on the size of the tenancy. You may influence starting point and number of workers, but on this stage it's not important. Let's assume that your tenancy is not massive and process will take no more than a minute.
-
-```
-discover_compartments
-```
-
-## Autocomplete on steroids
-Now you can use auto-complete on steroids with path support.
-
-```
-oci compute instance list --compartment-id
-```
-... press TAB to notice that / is added.
+Now you see added slash.
 
 ```
 oci compute instance list --compartment-id /
 ```
-... press TAB twice, to see list of your root level compartments.
+
+... press TAB, TAB to see list of your root level compartments.
+
 
 ```
 oci compute instance list --compartment-id /
 /prod            /ManagedCompartmentForPaaS  
 ```
 
-Now you can work with autocomplete in the same way you used to work with directories.
+Now you can work with autocomplete in the same way you used to work with directories. Compartment autocomplete has exactly the same mechanics as autocomplete of regular file system path and files, as it's implemented using local compartment cache, which is organized using file system.
 
 ```
 oci compute instance list --compartment-id /prod/meet-me-room
 ```
 
-> [!Note]
-> Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
+Notice here little of magic, as oci command in place of expected ocid accepts resource path. It's handled by oci wrapper replacing path into required ocid. This function is described later in this document. if you are interested in details keep reading, if not enjoy OCI CLI autocomplete.
+
+Compartment information is collected from oci each time you press TAB, so you may see tiny delay. Once the data is in the cache - it will be reused. Data is reloaded after 1 minute to always see current compartments.
 
 ## Internals
 TODO
