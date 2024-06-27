@@ -33,7 +33,7 @@ Let' play with simple OCI CLI autocomplete. Load the source code and source it. 
 
 ```bash
 mkdir -p ~/.oci/bin
-wget https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/bin/oci_wrapper.sh -q -O - > ~/.oci/bin/oci_wrapper.sh
+wget --no-cache https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/bin/oci_wrapper.sh -q -O ~/.oci/bin/oci_wrapper.sh
 source ~/.oci/bin/oci_wrapper.sh
 ```
 
