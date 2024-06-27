@@ -514,9 +514,11 @@ _function_info
                     COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
                 #fi
             else
+                options=$($_clean_COMP_LINE 2>&1 | tr ' ' '\n' | grep "\-\-" | tr -d '[,.]')
+                
                 # shellcheck disable=SC2207
                 # shellcheck disable=SC2021
-                COMPREPLY=( $(compgen -W "$($_clean_COMP_LINE 2>&1 | grep "Error: Missing option(s)" | tr ' ' '\n' | grep "\-\-" | tr -d '[,.]')" -- "$_this") )               
+                COMPREPLY=( $(compgen -W "$options" -- "$_this") )               
             fi
 
             if [ "$_last" == '--compartment-id' ]; then
