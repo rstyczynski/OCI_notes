@@ -96,7 +96,7 @@ _function_info
     # remove forbidden characters
     local cmp_path=$(echo "$cmp_path_URI" | tr ' #%&{}\\<>' '_')
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
 
     local base_dir=$tenancy_home/iam/compartment
     
@@ -210,7 +210,7 @@ _function_info
     : ${ttl:=43200}
 
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
 
     local cmp_id=""
     if [ -z "$cmp_path" ] || [ "$cmp_path" == "/" ]; then
@@ -369,7 +369,7 @@ _function_info
     # return value
     local bastion_id
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
 
     local base_dir=$tenancy_home/bastion
 
@@ -444,7 +444,7 @@ _function_info
 
     local session_home=~/.oci/oc/session
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
  
     if [ -f "$session_home/${tenancy_realm}_${tenancy_name}/compartment" ]; then
         compartment=$(cat "$session_home/${tenancy_realm}_${tenancy_name}/compartment")
@@ -488,7 +488,7 @@ _function_info
     local _this=$2
     local _last=$3
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
 
     if [ "$_last" == oci ]; then
         # shellcheck disable=SC2207
@@ -554,7 +554,7 @@ _function_info
     local operation=$3
     local value=$4
 
-    discover_tenancy
+    discover_tenancy 2>/dev/null
     
     case "$family $resource $operation" in
     "iam compartment set")
