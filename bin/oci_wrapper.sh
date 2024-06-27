@@ -32,33 +32,47 @@ _function_info
 
     test -z "$OCI_CLI_PROFILE" && OCI_CLI_PROFILE=DEFAULT
 
-    tenancy_dir=~/.oci/objects/tenancy
-    mkdir -p $tenancy_dir
+    if [ "$(eval echo \$"${OCI_CLI_PROFILE}"_status)" != discovered ]; then
+        tenancy_dir=~/.oci/objects/tenancy
+        mkdir -p $tenancy_dir
 
-    tenancy_id=$(cat ~/.oci/config | sed -n "/\[${OCI_CLI_PROFILE}\]/,/\[/p" | grep tenancy | cut -d= -f2)
-    tenancy_realm=$(echo "$tenancy_id" | cut -d. -f3)
+        tenancy_id=$(cat ~/.oci/config | sed -n "/\[${OCI_CLI_PROFILE}\]/,/\[/p" | grep tenancy | cut -d= -f2)
+        tenancy_realm=$(echo "$tenancy_id" | cut -d. -f3)
 
-    if [ -z "$tenancy_id" ]; then
-        echo "General error. OCI profile at ~/.oci/config not available for $OCI_CLI_PROFILE."  
-        unset tenancy_id tenancy_realm tenancy_name tenancy_region_key 
-        return 1
+        if [ -z "$tenancy_id" ]; then
+            echo "General error. OCI profile at ~/.oci/config not available for $OCI_CLI_PROFILE."  
+            unset tenancy_id tenancy_realm tenancy_name tenancy_region_key 
+            return 1
+        fi
+
+        oci iam tenancy get --tenancy-id "$tenancy_id" > ${tenancy_dir}/details
+        read -r tenancy_name tenancy_region_key < <(jq -r '.data | "\(.name) \(.["home-region-key"])"' ${tenancy_dir}/details)
+
+        eval "${OCI_CLI_PROFILE}_tenancy_id=$tenancy_id"
+        eval "${OCI_CLI_PROFILE}_tenancy_realm=$tenancy_realm"
+        eval "${OCI_CLI_PROFILE}_tenancy_name=$tenancy_name"
+        eval "${OCI_CLI_PROFILE}_tenancy_region_key=$tenancy_region_key"
+
+        eval "${OCI_CLI_PROFILE}_status=discovered"
     fi
 
-    oci iam tenancy get --tenancy-id "$tenancy_id" > ${tenancy_dir}/details
-    read -r tenancy_name tenancy_region_key < <(jq -r '.data | "\(.name) \(.["home-region-key"])"' ${tenancy_dir}/details)
+    tenancy_id="$(eval echo \$"${OCI_CLI_PROFILE}_tenancy_id")"
+    tenancy_realm="$(eval echo \$"${OCI_CLI_PROFILE}_tenancy_realm")"
+    tenancy_name="$(eval echo \$"${OCI_CLI_PROFILE}_tenancy_name")"
+    tenancy_region_key="$(eval echo \$"${OCI_CLI_PROFILE}_tenancy_region_key")"
 
     tenancy_home=~/.oci/objects/tenancy/$tenancy_realm/$tenancy_name
     mkdir -p "$tenancy_home"
-
+    
     if [ -z "$tenancy_id" ] \
     || [ -z "$tenancy_realm" ] \
     || [ -z "$tenancy_name" ] \
     || [ -z "$tenancy_region_key" ]; then
-        echo "General error. OCI profile at ~/.oci/config not available for $OCI_CLI_PROFILE."  
+        echo "General error. OCI profile at ~/.oci/config not available for profile $OCI_CLI_PROFILE."  
         unset tenancy_id tenancy_realm tenancy_name tenancy_region_key 
         return 1
     else
-        echo "Tenency context prepared." >&2
+        echo "Tenancy context prepared." >&2
         echo "\- id:    $tenancy_id" >&2
         echo "\- realm: $tenancy_realm" >&2
         echo "\- name:  $tenancy_name" >&2
@@ -82,9 +96,7 @@ _function_info
     # remove forbidden characters
     local cmp_path=$(echo "$cmp_path_URI" | tr ' #%&{}\\<>' '_')
 
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+    discover_tenancy
 
     local base_dir=$tenancy_home/iam/compartment
     
@@ -197,9 +209,8 @@ _function_info
     # shellcheck disable=SC2223
     : ${ttl:=43200}
 
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+
+    discover_tenancy
 
     local cmp_id=""
     if [ -z "$cmp_path" ] || [ "$cmp_path" == "/" ]; then
@@ -358,10 +369,7 @@ _function_info
     # return value
     local bastion_id
 
-    # prepare tenency cache directory etc.
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+    discover_tenancy
 
     local base_dir=$tenancy_home/bastion
 
@@ -436,9 +444,7 @@ _function_info
 
     local session_home=~/.oci/oc/session
 
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+    discover_tenancy
  
     if [ -f "$session_home/${tenancy_realm}_${tenancy_name}/compartment" ]; then
         compartment=$(cat "$session_home/${tenancy_realm}_${tenancy_name}/compartment")
@@ -482,40 +488,35 @@ _function_info
     local _this=$2
     local _last=$3
 
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+    discover_tenancy
 
     if [ "$_last" == oci ]; then
         # shellcheck disable=SC2207
         COMPREPLY=( $(compgen -W "$(oci | grep '^    ' | sed 's/^    //g' | cut -d' ' -f1)" -- "$_this") )
     else
-        _clean_COMP_LINE=$(echo "$COMP_LINE" | sed "s| $_this$||")
-        _words_cnt=$(echo "$_clean_COMP_LINE" | wc -w)
+        local _clean_COMP_LINE=$(echo "$COMP_LINE" | sed "s| $_this$||")
+        local _words_cnt=$(echo "$_clean_COMP_LINE" | wc -w)
 
         if [ "$_words_cnt" -lt 4 ]; then
             # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "$($_clean_COMP_LINE | sed -n '/Commands:/,/xxx/p' | sed 's/^  //g' | cut -d' ' -f1)" -- "$_this") )   
         else
             if [ "$_clean_COMP_LINE" == "oci iam compartment set" ]; then
-                # set current compartment must be always absolute! Relative not allowed.
-                #if [[ "$_this" == .* ]]; then
-                #    session_pwc=$(get_working_compartment)
-                #    COMPREPLY=( ./$(cd ~/.oci/objects/tenancy/$tenancy_realm/$tenancy_name/iam/compartment$session_pwc; compgen -d -- $(echo $_this | sed 's|^\.||') ) )
-                #else
-                    get_compartments "/$_this" >/dev/null 2>/dev/null 
-                    if [ ! -d "$tenancy_home"/iam/compartment ]; then
-                        echo "Error. Compartment cache not ready. Discover compartments first." >&2
-                        return 1
-                    fi
-                    # shellcheck disable=SC2207
-                    # shellcheck disable=SC2164
-                    # shellcheck disable=SC2046
-                    COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
-                #fi
+                get_compartments "/$_this" >/dev/null 2>/dev/null 
+                if [ ! -d "$tenancy_home"/iam/compartment ]; then
+                    echo "Error. Compartment cache not ready. Discover compartments first." >&2
+                    return 1
+                fi
+                # shellcheck disable=SC2207
+                # shellcheck disable=SC2164
+                # shellcheck disable=SC2046
+                COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo "/$word"; done) )
             else
-                options=$($_clean_COMP_LINE 2>&1 | tr ' ' '\n' | grep "\-\-" | tr -d '[,.]')
-                
+                # 
+                local options=$($_clean_COMP_LINE 2>&1 \
+                | grep -v 'requires an argument' \
+                | tr ' ' '\n' | grep "\-\-" | tr -d '[,.]')
+
                 # shellcheck disable=SC2207
                 # shellcheck disable=SC2021
                 COMPREPLY=( $(compgen -W "$options" -- "$_this") )               
@@ -533,7 +534,6 @@ _function_info
                 # shellcheck disable=SC2086
                 COMPREPLY=( $(for word in $(cd "$tenancy_home/iam/compartment"; compgen -d -- $(echo "$_this" | sed 's|^/||') ); do echo /$word; done) )
             fi
-
         fi
     fi
 }
@@ -554,9 +554,7 @@ _function_info
     local operation=$3
     local value=$4
 
-    if [ -z "$tenancy_home" ]; then
-        discover_tenancy
-    fi
+    discover_tenancy
     
     case "$family $resource $operation" in
     "iam compartment set")
@@ -564,6 +562,7 @@ _function_info
     ;;
     esac
 }
+
 #
 # OCI wrapper to handle compartment URL
 #
