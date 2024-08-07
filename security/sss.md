@@ -123,6 +123,12 @@ rmdir sss
 
 Complete code is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
 
+# Wikipedia
+Wikipedia article emplaning Shamir’s Secret Sharing presents python code with low level mathematical code using core python features w/o any external library. Code seems to be working for short secrets up to 15 characters, but apart of this does the job.
+
+The code with slight improvements is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
+
+
 # Conclusion
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged passwords in cloud environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, thereby reducing the risk of unauthorized access and single points of failure.
 
