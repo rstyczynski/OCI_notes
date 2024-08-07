@@ -160,12 +160,12 @@ cat $shares_working_dir/shares.txt | ../bin/sss-share-fingerprints.sh > $shares_
 
 Execute share collection procedure. This procedure will finish after reception of two shares identified by sha fingerprint.
 ``` bash
-sss/bin/sss_collect_shares.sh 2
+../bin/sss_collect_shares.sh 2
 ```
 
 In another terminal simulate share provide process.
 ``` bash
-sss/bin/sss-provide_shares.sh
+../bin/sss-provide_shares.sh
 ```
 
 Build secret from collected shares.
