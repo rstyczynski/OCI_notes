@@ -36,7 +36,7 @@ brew install coreutils
 
 Prepare environment
 ``` bash
-shares_working_dir=./sss/generate
+shares_working_dir=$HOME/sss/generate
 mkdir -p $shares_working_dir
 cd $shares_working_dir
 ```
@@ -82,7 +82,7 @@ brew install coreutils
 
 Prepare environment
 ``` bash
-shares_working_dir=./sss/generate
+shares_working_dir=$HOME/sss/generate
 mkdir -p $shares_working_dir
 cd $shares_working_dir
 ```
