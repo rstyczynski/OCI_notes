@@ -66,9 +66,9 @@ cat password_recombined.txt
 Complete code is here: [sss-osx-vitkabele.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-vitkabele.sh)
 
 
-# secretsharing python package
+# secretsharing Python package
 
-Let's do the same using regular python library - secretsharing.
+Let's do the same using regular Python library - secretsharing.
 
 Install tools; adjust this code for your system.
 ``` bash
@@ -76,9 +76,9 @@ brew install pwgen
 brew install coreutils
 ```
 
-Install python library and get CLI python code
+Install Python library and get CLI Python code
 ``` bash
-python3 -m venv sss
+Python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
@@ -94,7 +94,7 @@ pwgen -s -y -B 12 1 > password.txt
 
 Split the password and remove in a safe way
 ``` bash
-cat password.txt | sss/bin/python sss/bin/sss-split.py 2 5 >shares.txt
+cat password.txt | sss/bin/Python sss/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
 ```
@@ -103,7 +103,7 @@ Take two random shares available fragments and reconstruct the password
 ``` bash
 cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-cat shares_subset.txt | sss/bin/python sss/bin/sss-combine.py > password_recombined.txt
+cat shares_subset.txt | sss/bin/Python sss/bin/sss-combine.py > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
 ```
 
@@ -114,7 +114,7 @@ diff password.sha password_recombined.sha && echo OK || echo Error
 cat password_recombined.txt
 ```
 
-Remove python environment
+Remove Python environment
 ``` bash
 deactivate
 rm -rf sss/*
@@ -124,10 +124,9 @@ rmdir sss
 Complete code is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
 
 # Wikipedia
-Wikipedia article emplaning Shamir’s Secret Sharing presents python code with low level mathematical code using core python features w/o any external library. Code seems to be working for short secrets up to 15 characters, but apart of this does the job.
+The Wikipedia article explaining Shamir’s Secret Sharing presents Python code with low-level mathematical operations using core Python features without any external libraries. The code works for short secrets up to 15 characters but can be adapted to handle longer secrets by splitting them into 15-character fragments and processing each fragment separately. This simple code can effectively manage longer secrets if needed. The advantage of this code is its simplicity, which allows it to be easily controlled by maintainers with the appropriate knowledge.
 
-The code with slight improvements is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
-
+The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_wikipedia-demo.py)
 
 # Conclusion
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged passwords in cloud environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, thereby reducing the risk of unauthorized access and single points of failure.
@@ -140,11 +139,12 @@ This approach enhances security by distributing the responsibility and making un
 3. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed. 
 4. To improve safety each share owner holds set of fingerprints of all other shares; it protect against providing wrong share by one of corrupted share holders.
 5. First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind.
-6. Another python based example uses library available in packages repository
-7. Wiki page describing sss conveys low level python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
+6. Another Python based example uses library available in packages repository
+7. Wiki page describing sss conveys low level Python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
 
 # References
-* https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-python-implementation-da25ae241c5d
+* https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
+* https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-Python-implementation-da25ae241c5d
 * https://evervault.com/blog/shamir-secret-sharing
 * https://github.com/dsprenkels/sss-cli
 * https://github.com/blockstack/secret-sharing
