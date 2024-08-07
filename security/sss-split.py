@@ -22,6 +22,7 @@ def main():
     
     for share in shares:
         print(share)
+    print
     
 if __name__ == '__main__':
     main()
