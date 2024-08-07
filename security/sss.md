@@ -132,7 +132,11 @@ Share collection receives shares from shareholders, who copy their shares into s
 Get share collection code.
 ``` bash
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > sss/bin/sss_collect_shares.sh
+chmod +x sss/bin/sss_collect_shares.sh
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > sss/bin/sss-share-fingerprints.sh
+chmod +x sss/bin/sss-share-fingerprints.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-provide_shares.sh >> sss/bin/sss-provide_shares.sh
+chmod +x sss/bin/sss-provide_shares.sh
 ```
 
 Extend generation process by preparation of sha set.
@@ -146,10 +150,17 @@ Execute share collection procedure. This procedure will finish after reception o
 sss/bin/sss_collect_shares.sh 2
 ```
 
+In another terminal simulate share provide process.
+``` bash
+sss/bin/sss-provide_shares.sh
+```
+
 Build secret from received shares.
 ``` bash
 cat $shares_working_dir/shares_received.txt | secret-share-combine 
 ```
+
+Process shows how to reconstruct password from minimal set of shares. Shared code may be theoretically used with exception of sss-provide_shares.sh which should be replaced with code copying shares from USB stick or getting data from data recorded on paper or QR code.
 
 # Conclusion
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged accounts' passwords in environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, reducing the risk of unauthorized access and single points of failure.
