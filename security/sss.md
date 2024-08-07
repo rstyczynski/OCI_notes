@@ -34,6 +34,13 @@ brew install pwgen
 brew install coreutils
 ```
 
+Prepare environment
+``` bash
+shares_working_dir=./sss/generate
+mkdir -p $shares_working_dir
+cd $shares_working_dir
+```
+
 Generate password
 ``` bash
 pwgen -s -y -B 12 1 > password.txt
@@ -48,7 +55,7 @@ gshred -u -n 3 password.txt
 
 Take two random shares available fragments and reconstruct the password
 ``` bash
-cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
+cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 > shares_subset.txt
 
 cat shares_subset.txt | secret-share-combine > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
@@ -73,15 +80,26 @@ brew install pwgen
 brew install coreutils
 ```
 
+Prepare environment
+``` bash
+shares_working_dir=./sss/generate
+mkdir -p $shares_working_dir
+cd $shares_working_dir
+```
+
 Install Python library and get CLI Python code
 ``` bash
+cd ..
 Python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > sss/bin/sss-split.py
+chmod +x sss/bin/sss-split.py
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > sss/bin/sss-combine.py
+chmod +x sss/bin/sss-combine.py
+cd -
 ```
 
 Generate password
