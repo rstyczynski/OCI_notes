@@ -125,13 +125,14 @@ The Wikipedia article explaining Shamir’s Secret Sharing presents Python code 
 
 The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_wikipedia-demo.py)
 
-# Share collection model
+# Share collection model (in progress)
 
 Share collection receives shares from shareholders, who copy their shares into specified input directory. Share collection stops when required number of shares is received. 
 
 Get share collection code.
 ``` bash
-curl -S xxx > sss/bin/sss_collect_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > sss/bin/sss_collect_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > sss/bin/sss-share-fingerprints.sh
 ```
 
 Extend generation process by preparation of sha set.
