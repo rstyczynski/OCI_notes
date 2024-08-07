@@ -1,7 +1,7 @@
 #!/bin/bash
 
-shares_working_dir=./sss/generate
-shares_input_dir=./sss/shares_input
+shares_working_dir=$HOME/sss/generate
+shares_input_dir=$HOME/sss/shares_input
 
 numbers=(1 2 3 4 5)
 shuffled_numbers=$(echo "${numbers[@]}" | tr ' ' '\n' | shuf | tr '\n' ' ')

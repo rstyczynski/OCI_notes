@@ -92,9 +92,9 @@ source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > bin/sss-split.py
+curl -S --noproxy '*' https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > bin/sss-split.py
 chmod +x bin/sss-split.py
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > bin/sss-combine.py
+curl -S --noproxy '*' https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > bin/sss-combine.py
 chmod +x bin/sss-combine.py
 cd -
 ```
@@ -144,11 +144,11 @@ cd $shares_working_dir
 
 Get share collection code.
 ``` bash
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > ../bin/sss_collect_shares.sh
+curl -S --noproxy '*' https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > ../bin/sss_collect_shares.sh
 chmod +x ../bin/sss_collect_shares.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > ../bin/sss-share-fingerprints.sh
+curl -S --noproxy '*' https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > ../bin/sss-share-fingerprints.sh
 chmod +x ../bin/sss-share-fingerprints.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-provide_shares.sh >> ../bin/sss-provide_shares.sh
+curl -S --noproxy '*' https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-provide_shares.sh > ../bin/sss-provide_shares.sh
 chmod +x ../bin/sss-provide_shares.sh
 ```
 
@@ -165,6 +165,8 @@ Execute share collection procedure. This procedure will finish after reception o
 
 In another terminal simulate share provide process.
 ``` bash
+shares_working_dir=$HOME/sss/generate
+cd $shares_working_dir
 ../bin/sss-provide_shares.sh
 ```
 
