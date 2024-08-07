@@ -109,7 +109,7 @@ pwgen -s -y -B 12 1 > password.txt
 
 Split the password and remove in a safe way
 ``` bash
-cat password.txt | sss/bin/Python sss/bin/sss-split.py 2 5 >shares.txt
+cat password.txt | sss/bin/python sss/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
 ```
@@ -118,7 +118,7 @@ Take two random shares available fragments and reconstruct the password
 ``` bash
 cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-cat shares_subset.txt | sss/bin/Python sss/bin/sss-combine.py > password_recombined.txt
+cat shares_subset.txt | sss/bin/python sss/bin/sss-combine.py > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
 ```
 
