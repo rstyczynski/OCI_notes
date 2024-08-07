@@ -44,7 +44,7 @@ pwgen -s -y -B 12 1 > password.txt
 
 Split the password and remove in a safe way
 ``` bash
-secret-share-split --count 5 --threshold 2 	password.txt >shares.txt
+secret-share-split --count 5 --threshold 2 password.txt >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
 ```
@@ -63,6 +63,9 @@ diff password.sha password_recombined.sha && echo OK || echo Error
 cat password_recombined.txt
 ```
 
+Complete code is here: [sss-osx-vitkabele.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-vitkabele.sh)
+
+
 # secretsharing python package
 
 Let's do the same using regular python library - secretsharing.
@@ -78,7 +81,7 @@ Install python library and get CLI python code
 python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
-pip3 install --upgrade --force-reinstall  git+https://github.com/blockstack/secret-sharing
+pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > sss/bin/sss-split.py
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > sss/bin/sss-combine.py
@@ -91,7 +94,7 @@ pwgen -s -y -B 12 1 > password.txt
 
 Split the password and remove in a safe way
 ``` bash
-cat password.txt | sss/bin/python sss/bin/sss-split.py  2 5 >shares.txt
+cat password.txt | sss/bin/python sss/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
 ```
@@ -117,6 +120,8 @@ deactivate
 rm -rf sss/*
 rmdir sss
 ```
+
+Complete code is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
 
 # Conclusion
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged passwords in cloud environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, thereby reducing the risk of unauthorized access and single points of failure.
