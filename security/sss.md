@@ -27,6 +27,7 @@ Implementing proper security procedure eliminates this serious problem. Shamir's
 Take a look at two exemplary model codes. Code was prepared on OSX, but may be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
 # sss-cli
+First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
 
 Install tools; adjust this part for your system.
 ``` bash
@@ -66,7 +67,7 @@ Complete code is here: [sss-osx-vitkabele.sh](https://raw.githubusercontent.com/
 
 # secretsharing Python package
 
-Let's do the same using regular Python library - secretsharing.
+Let's do the same using regular Python library - secretsharing. 
 
 Install tools; adjust this code for your system.
 ``` bash
@@ -127,18 +128,15 @@ The Wikipedia article explaining Shamir’s Secret Sharing presents Python code 
 The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_wikipedia-demo.py)
 
 # Conclusion
-Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged passwords in cloud environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, thereby reducing the risk of unauthorized access and single points of failure.
+Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged accounts' passwords in environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, reducing the risk of unauthorized access and single points of failure.
 
-This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be endorsed by governance and security officers, emphasizing proper procedures and training to build awareness of its importance.
+This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be owned by governance and security officers, emphasizing proper procedures and training IT staff to build awareness of its importance.
 
 # Implementation notes
 1. Computer should air gapped i.e. physically disconnected from internet and any other network.
 2. Operation should be performed on encrypted ramdisk, created before use and destroyed after
 3. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed. 
-4. To improve safety each share owner holds set of fingerprints of all other shares; it protect against providing wrong share by one of corrupted share holders.
-5. First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind.
-6. Another Python based example uses library available in packages repository
-7. Wiki page describing sss conveys low level Python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
+4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of corrupted share holders.
 
 # References
 ## General
