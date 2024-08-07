@@ -1,4 +1,4 @@
-# Shamir' scheme secret sharing 
+# Shamir's Secret Sharing scheme
 
 Cloud technology has revolutionized the way businesses and individuals manage and deploy their IT resources, offering flexibility, scalability, and cost efficiency. However, this new model introduces new security challenges, primarily due to the inherent accessibility of cloud systems through APIs.
 
@@ -18,13 +18,13 @@ This scheme has obvious security advantage. Distributing the shares reduces the 
 
 What happened when one of them will be not available or will loose his part? Hopefully cloud support will help, but it will take time. On the other hand, ideally support should not be able to help, as it's not their business and not their security scope. When Support may help - it means that any unauthorized party may gain access incl. government agencies, and it's not what you want to be possible.
 
-A more robust solution is to use Shamir's secret sharing scheme. This involves dividing the password among few trusted persons, with the requirement that defined subset of them can reconstruct the password. It means that when some of them are unavailable, the remaining ones can still reconstruct the password as long as the threshold (e.g. three out of five) is met.
+A more robust solution is to use Shamir's Secret Sharing scheme. This involves dividing the password among few trusted persons, with the requirement that defined subset of them can reconstruct the password. It means that when some of them are unavailable, the remaining ones can still reconstruct the password as long as the threshold (e.g. three out of five) is met.
 
-Shamir's secret sharing scheme establishes secure and redundant way of storing highly critical passwords. Adoption of such scheme must be confirmed by the governance and security officers, who should establish appropriate procedures and take care of trainings to build real awareness of secret sharing importance. 
+Shamir's Secret Sharing scheme establishes secure and redundant way of storing highly critical passwords. Adoption of such scheme must be confirmed by the governance and security officers, who should establish appropriate procedures and take care of trainings to build real awareness of secret sharing importance. 
 
 Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. 
 
-Implementing proper security procedure eliminates this serious problem. Shamir's secret sharing scheme is one of achievable solutions to achieve it.
+Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of achievable solutions to achieve it.
 
 Take a look at below exemplary model code for OSX. Code may be used at any  regular system; adjust packages install for your case.
 
@@ -138,6 +138,11 @@ deactivate
 rm -rf sss/*
 rmdir sss
 ```
+
+# Conclusion
+Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged passwords in cloud environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, thereby reducing the risk of unauthorized access and single points of failure.
+
+This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be endorsed by governance and security officers, emphasizing proper procedures and training to build awareness of its importance.
 
 # Implementation notes
 1. Operation should be performed on encrypted ramdisk, created before use and destroyed after
