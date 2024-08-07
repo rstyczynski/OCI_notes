@@ -132,6 +132,9 @@ Shamir’s Secret Sharing scheme offers a robust solution for managing highly pr
 
 This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be owned by governance and security officers, emphasizing proper procedures and training IT staff to build awareness of its importance.
 
+# Adi Shamir
+You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful—simple and unbreakable. Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
+
 # Implementation notes
 1. Computer should air gapped i.e. physically disconnected from internet and any other network.
 2. Operation should be performed on encrypted ramdisk, created before use and destroyed after
@@ -140,6 +143,7 @@ This approach enhances security by distributing the responsibility and making un
 
 # References
 ## General
+* https://en.wikipedia.org/wiki/Adi_Shamir
 * https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
 * https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-Python-implementation-da25ae241c5d
 * https://evervault.com/blog/shamir-secret-sharing
