@@ -95,10 +95,10 @@ source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > sss/bin/sss-split.py
-chmod +x sss/bin/sss-split.py
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > sss/bin/sss-combine.py
-chmod +x sss/bin/sss-combine.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > bin/sss-split.py
+chmod +x bin/sss-split.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > bin/sss-combine.py
+chmod +x bin/sss-combine.py
 cd -
 ```
 
@@ -147,14 +147,21 @@ The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.g
 
 Share collection receives shares from shareholders, who copy their shares into specified input directory. Share collection stops when required number of shares is received. 
 
+Prepare environment
+``` bash
+shares_working_dir=$HOME/sss/generate
+mkdir -p $shares_working_dir
+cd $shares_working_dir
+```
+
 Get share collection code.
 ``` bash
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > sss/bin/sss_collect_shares.sh
-chmod +x sss/bin/sss_collect_shares.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > sss/bin/sss-share-fingerprints.sh
-chmod +x sss/bin/sss-share-fingerprints.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-provide_shares.sh >> sss/bin/sss-provide_shares.sh
-chmod +x sss/bin/sss-provide_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_collect_shares.sh > ../bin/sss_collect_shares.sh
+chmod +x ../bin/sss_collect_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-share-fingerprints.sh > ../bin/sss-share-fingerprints.sh
+chmod +x ../bin/sss-share-fingerprints.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-provide_shares.sh >> ../bin/sss-provide_shares.sh
+chmod +x ../bin/sss-provide_shares.sh
 ```
 
 Extend generation process by preparation of sha set.
