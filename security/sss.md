@@ -125,6 +125,31 @@ The Wikipedia article explaining Shamir’s Secret Sharing presents Python code 
 
 The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_wikipedia-demo.py)
 
+# Share collection model
+
+Share collection receives shares from shareholders, who copy their shares into specified input directory. Share collection stops when required number of shares is received. 
+
+Get share collection code.
+``` bash
+curl -S xxx > sss/bin/sss_collect_shares.sh
+```
+
+Extend generation process by preparation of sha set.
+``` bash
+shares_working_dir=sss/generate
+cat $shares_working_dir/shares.txt | sss/bin/sss-share-fingerprints.sh > $shares_working_dir/shares_sha.txt
+```
+
+Execute share collection procedure. This procedure will finish after reception of two shares identified by sha fingerprint.
+``` bash
+sss/bin/sss_collect_shares.sh 2
+```
+
+Build secret from received shares.
+``` bash
+cat $shares_working_dir/shares_received.txt | secret-share-combine 
+```
+
 # Conclusion
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged accounts' passwords in environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, reducing the risk of unauthorized access and single points of failure.
 
