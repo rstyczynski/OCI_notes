@@ -6,9 +6,9 @@ threshold=$1
 # collect password pieces
 #
 
-shares_working_dir=./sss/generate
-shares_input_dir=./sss/shares_input
-shares_dir=./sss/shares
+shares_working_dir=$HOME/sss/generate
+shares_input_dir=$HOME/sss/shares_input
+shares_dir=$HOME/sss/shares
 
 mkdir -p $shares_dir; rm -rf $shares_dir/*
 mkdir -p $shares_input_dir; rm -rf $shares_input_dir/*

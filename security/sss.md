@@ -154,7 +154,7 @@ chmod +x ../bin/sss-provide_shares.sh
 
 Extend generation process by preparation of sha set.
 ``` bash
-shares_working_dir=sss/generate
+shares_working_dir=$HOME/sss/generate
 cat $shares_working_dir/shares.txt | ../bin/sss-share-fingerprints.sh > $shares_working_dir/shares_sha.txt
 ```
 
