@@ -129,13 +129,6 @@ diff password.sha password_recombined.sha && echo OK || echo Error
 cat password_recombined.txt
 ```
 
-Remove Python environment
-``` bash
-deactivate
-rm -rf sss/*
-rmdir sss
-```
-
 Complete code is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
 
 # Wikipedia
