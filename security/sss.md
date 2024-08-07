@@ -67,9 +67,6 @@ diff password.sha password_recombined.sha && echo OK || echo Error
 cat password_recombined.txt
 ```
 
-Complete code is here: [sss-osx-vitkabele.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-vitkabele.sh)
-
-
 # secretsharing Python package
 
 Let's do the same using regular Python library - secretsharing. 
@@ -128,8 +125,6 @@ diff password.sha password_recombined.sha && echo OK || echo Error
 
 cat password_recombined.txt
 ```
-
-Complete code is here: [sss-osx-secretshare.sh](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-osx-secretshare.sh)
 
 # Wikipedia
 The Wikipedia article explaining Shamir’s Secret Sharing presents Python code with low-level mathematical operations using core Python features without any external libraries. The code works for short secrets up to 15 characters but can be adapted to handle longer secrets by splitting them into 15-character fragments and processing each fragment separately. This simple code can effectively manage longer secrets if needed. The advantage of this code is its simplicity, which allows it to be easily controlled by maintainers with the appropriate knowledge.
