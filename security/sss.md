@@ -10,7 +10,7 @@ Cloud providers as Oracle OCI promotes best practices related to notification ab
 
 To remove the risk power users shall connect under supervisory of several personas under special access procedure. 
 
-To remove the risk, let's split the password and share among two board members. It's called secret sharing. In case of emergency they will give parts of the password, and after sss processing, the access will be possible. 
+To remove the risk, let's split the password and share among two board members. It's called secret sharing. In case of emergency they will give parts of the password, and the access will be possible. 
 
 This scheme has obvious security advantage. Distributing the shares reduces the risk of a single point of failure. Unauthorized access becomes harder since multiple individuals are involved. 
 
