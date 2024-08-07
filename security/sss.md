@@ -26,114 +26,93 @@ Owning the master password is like owning the code to the nuclear button; when t
 
 Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of achievable solutions to achieve it.
 
-Take a look at below exemplary model code for OSX. Code may be used at any  regular system; adjust packages install for your case.
+Take a look at two exemplary model codes. Code was prepared on OSX, but may be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
+# sss-cli
+
+Install tools; adjust this part for your system.
 ``` bash
-# install tools; adjust for your system.
 brew install vitkabele/tap/sss-cli
 brew install pwgen
 brew install coreutils
+```
 
-# generate password
+Generate password
+``` bash
 pwgen -s -y -B 12 1 > password.txt
+```
 
-# split the password and remove in a safe way
+Split the password and remove in a safe way
+``` bash
 secret-share-split --count 5 --threshold 2 	password.txt >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
+```
 
-# take two random shares available fragments
+Take two random shares available fragments and reconstruct the password
+``` bash
 cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-# reconstruct password
 cat shares_subset.txt | secret-share-combine > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
+```
 
-# validate
+Validate and view the recovered password.
+``` bash
 diff password.sha password_recombined.sha && echo OK || echo Error
-
-# view the password
 cat password_recombined.txt
 ```
 
-Let's do the same using 10 years old python library, which looks stable.
+# secretsharing python package
 
+Let's do the same using regular python library - secretsharing.
+
+Install tools; adjust this code for your system.
 ``` bash
-# install tools; adjust for your system.
 brew install pwgen
 brew install coreutils
+```
 
-# install python library
+Install python library and get CLI python code
+``` bash
 python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall  git+https://github.com/blockstack/secret-sharing
 
-# prepare code
-cat > sss/bin/sss-split.py  <<_EOF
-from secretsharing import PlaintextToHexSecretSharer
-import argparse
-import sys
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > sss/bin/sss-split.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > sss/bin/sss-combine.py
+```
 
-def main():
-
-    parser = argparse.ArgumentParser(description="Shamir's Secret Sharing CLI")
-    parser.add_argument('minimum', type=int, help='Minimum number of shares needed to reconstruct the secret')
-    parser.add_argument('shares', type=int, help='Total number of shares to create')
-
-    args = parser.parse_args()
-
-    secret = secret = sys.stdin.readline().strip()
-    threshold = args.minimum
-    num_shares = args.shares
-    
-    # Create shares
-    shares = PlaintextToHexSecretSharer.split_secret(
-                secret,                                          
-                share_threshold = threshold, 
-                num_shares = num_shares)
-    
-    for share in shares:
-        print(share)
-    
-if __name__ == '__main__':
-    main()
-_EOF
-
-cat > sss/bin/sss-combine.py << _EOF
-from secretsharing import PlaintextToHexSecretSharer
-import sys
-
-# Read shares from stdin
-shares = sys.stdin.read().splitlines()
-
-# Recover the secret from the shares
-recovered_secret = PlaintextToHexSecretSharer.recover_secret(shares)
-print(recovered_secret)
-_EOF
-
-# generate password
+Generate password
+``` bash
 pwgen -s -y -B 12 1 > password.txt
+```
 
-# split the password and remove in a safe way
+Split the password and remove in a safe way
+``` bash
 cat password.txt | sss/bin/python sss/bin/sss-split.py  2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
+```
 
-# take two random shares available fragments
+Take two random shares available fragments and reconstruct the password
+``` bash
 cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-# reconstruct password
 cat shares_subset.txt | sss/bin/python sss/bin/sss-combine.py > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
+```
 
-# validate
+Validate and view the password
+``` bash
 diff password.sha password_recombined.sha && echo OK || echo Error
 
-# view the password
 cat password_recombined.txt
+```
 
-# remove python environment
+Remove python environment
+``` bash
 deactivate
 rm -rf sss/*
 rmdir sss
@@ -145,12 +124,13 @@ Shamir’s Secret Sharing scheme offers a robust solution for managing highly pr
 This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be endorsed by governance and security officers, emphasizing proper procedures and training to build awareness of its importance.
 
 # Implementation notes
-1. Operation should be performed on encrypted ramdisk, created before use and destroyed after
-2. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed. 
-3. To improve safety each share owner holds set of fingerprints of all other shares; it protect against providing wrong share by one of corrupted share holders.
-4. First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind.
-5. Another python based example uses library available in packages repository
-6. Wiki page describing sss conveys low level python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
+1. Computer should air gapped i.e. physically disconnected from internet and any other network.
+2. Operation should be performed on encrypted ramdisk, created before use and destroyed after
+3. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed. 
+4. To improve safety each share owner holds set of fingerprints of all other shares; it protect against providing wrong share by one of corrupted share holders.
+5. First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind.
+6. Another python based example uses library available in packages repository
+7. Wiki page describing sss conveys low level python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
 
 # References
 * https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-python-implementation-da25ae241c5d
