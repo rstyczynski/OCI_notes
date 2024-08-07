@@ -155,7 +155,7 @@ In another terminal simulate share provide process.
 sss/bin/sss-provide_shares.sh
 ```
 
-Build secret from received shares.
+Build secret from collected shares.
 ``` bash
 cat $shares_working_dir/shares_received.txt | secret-share-combine 
 ```
