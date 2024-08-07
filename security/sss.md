@@ -24,7 +24,7 @@ Owning the master password is like owning the code to the nuclear button; when t
 
 Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of achievable solutions to achieve it.
 
-Take a look at two exemplary model codes. Code was prepared on OSX, but may be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
+Take a look at two exemplary model codes. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
 # sss-cli
 First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
