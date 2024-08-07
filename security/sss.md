@@ -141,11 +141,6 @@ This approach enhances security by distributing the responsibility and making un
 7. Wiki page describing sss conveys low level Python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
 
 # References
-## Oracle
-* https://www.oracle.com/a/ocom/docs/security/oci-iam-emergency-access-accounts-v1.8.pdf
-* https://www.oracle.com/a/ocom/docs/whitepaper-zero-trust-security-oci.pdf
-* https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/configure-fido-security.html
-
 ## General
 * https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
 * https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-Python-implementation-da25ae241c5d
@@ -153,6 +148,11 @@ This approach enhances security by distributing the responsibility and making un
 * https://github.com/dsprenkels/sss-cli
 * https://github.com/blockstack/secret-sharing
 * https://dl.acm.org/doi/pdf/10.1145/359168.359176
+
+## Oracle
+* https://www.oracle.com/a/ocom/docs/security/oci-iam-emergency-access-accounts-v1.8.pdf
+* https://www.oracle.com/a/ocom/docs/whitepaper-zero-trust-security-oci.pdf
+* https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/configure-fido-security.html
 
 ## Industry
 * https://www.cloudflare.com/en-gb/dns/dnssec/root-signing-ceremony/
