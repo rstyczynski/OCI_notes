@@ -1,14 +1,12 @@
 # Shamir's Secret Sharing scheme
 
-Cloud technology has revolutionized the way businesses and individuals manage and deploy their IT resources, offering flexibility, scalability, and cost efficiency. However, this new model introduces new security challenges, primarily due to the inherent accessibility of cloud systems through APIs.
+Cloud technology has revolutionized the way businesses and individuals manage and deploy their IT resources, offering flexibility, scalability, security and cost efficiency. Providing advantages, the cloud model introduces new security challenges, primarily due to the accessibility of cloud systems through APIs.
 
 Imagine cloud tenancy cloud account that can literally do everything with all the resources. Imagine Oracle DRCC owner account that can do all good and bad things with the whole OCI region. That's a huge power and huge responsibility. Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. Would you like to be in possession of the master password? I'm sure not. 
 
 As cloud technology continues to evolve, ensuring robust security measures is essential to protect sensitive data and resources. Several techniques can significantly improve security, including the use of strong passwords and the implementation of Multi-Factor Authentication (MFA). Recent achievement is adoption of Fast Identity Online (FIDO) standard, enabling third party trust source device to be used in authentication process. Some systems already replaced passwords with FIDO devices as e.g. fingerprint scanner available in Mac computers. Anyway it does not matter if single person provides the password (sth he knows) or uses FIDO (sth he has). Still it's the single person with power to control whole system.
 
-Cloud providers as Oracle OCI promotes best practices related to notification about power user (break glass) connection to the system, and modification of power user properties. It's good as security team may closely look into audit stream to discover why this individual has connected on the top privileged account.
-
-Having this owner may react on potential improper behavior, however it may be too late, as attacker may destroy a lot in seconds. That's the consequence of having power of API.
+Cloud providers as Oracle OCI promotes best practices related to notification about power user (break glass) connection to the system, and modification of power user properties. It's good as security team may closely look into audit stream to discover why this individual has connected on the top privileged account. Being notified, owner may react on potential improper behavior, however it may be too late, as attacker may destroy a lot in seconds. That's the consequence of having power of API.
 
 To remove the risk power users shall connect under supervisory of several personas under special access procedure. 
 
@@ -143,6 +141,12 @@ This approach enhances security by distributing the responsibility and making un
 7. Wiki page describing sss conveys low level Python code that works for shares up to 15 characters. This one may be used as well, after slight adoption.
 
 # References
+## Oracle
+* https://www.oracle.com/a/ocom/docs/security/oci-iam-emergency-access-accounts-v1.8.pdf
+* https://www.oracle.com/a/ocom/docs/whitepaper-zero-trust-security-oci.pdf
+* https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/configure-fido-security.html
+
+## General
 * https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing
 * https://medium.com/@goldengrisha/shamirs-secret-sharing-a-step-by-step-guide-with-Python-implementation-da25ae241c5d
 * https://evervault.com/blog/shamir-secret-sharing
@@ -150,4 +154,5 @@ This approach enhances security by distributing the responsibility and making un
 * https://github.com/blockstack/secret-sharing
 * https://dl.acm.org/doi/pdf/10.1145/359168.359176
 
-
+## Industry
+* https://www.cloudflare.com/en-gb/dns/dnssec/root-signing-ceremony/
