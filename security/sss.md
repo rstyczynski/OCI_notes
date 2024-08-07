@@ -8,7 +8,7 @@ As cloud technology continues to evolve, ensuring robust security measures is es
 
 Cloud providers as Oracle OCI promotes best practices related to notification about power user (break glass) connection to the system, and modification of power user properties. It's good as security team may closely look into audit stream to discover why this individual has connected on the top privileged account. Being notified, owner may react on potential improper behavior, however it may be too late, as attacker may destroy a lot in seconds. That's the consequence of having power of API.
 
-To remove the risk power users shall connect under supervisory of several personas under special access procedure. Let's split the password and share among two board members. It's called secret sharing. In case of emergency they will give parts of the password, and the access will be possible. 
+To remove the risk power users shall connect under supervisory of several persons under special access procedure. Let's split the password and share among two board members. It's called secret sharing. In case of emergency they will give parts of the password, and the access will be possible. 
 
 This scheme has obvious security advantage. Distributing the shares reduces the risk of a single point of failure. Unauthorized access becomes harder since multiple individuals are involved. 
 
