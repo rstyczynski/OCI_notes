@@ -9,6 +9,9 @@ threshold=$1
 : ${sss_input:=$HOME/sss/input}
 : ${sss_shares:=$HOME/sss/shares}
 
+rm -rf "$sss_input"/*
+rm -rf "$sss_shares"/*
+
 function collect_shares {
     threshold=$1
 
