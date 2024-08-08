@@ -88,8 +88,7 @@ cd $sss_session
 
 Install Python library and get CLI Python code
 ``` bash
-cd $sss_home
-cd ..
+cd $sss_home/..
 python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
