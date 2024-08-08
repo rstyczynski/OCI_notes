@@ -31,7 +31,6 @@ Install tools; adjust this part for your system.
 ``` bash
 brew install vitkabele/tap/sss-cli
 brew install pwgen
-brew install coreutils
 ```
 
 Prepare environment
@@ -51,7 +50,6 @@ Split the password and remove in a safe way
 ``` bash
 secret-share-split --count 5 --threshold 2 password.txt >shares.txt
 cat password.txt | sha256sum > password.sha
-gshred -u -n 3 password.txt 
 ```
 
 Take two random shares available fragments and reconstruct the password
@@ -75,7 +73,6 @@ Let's do the same using regular Python library - secretsharing.
 Install tools; adjust this code for your system.
 ``` bash
 brew install pwgen
-brew install coreutils
 ```
 
 Prepare environment
@@ -111,7 +108,6 @@ Split the password and remove in a safe way
 ``` bash
 cat password.txt | $sss_home/bin/python $sss_home/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
-gshred -u -n 3 password.txt 
 ```
 
 Take two random shares available fragments and reconstruct the password
