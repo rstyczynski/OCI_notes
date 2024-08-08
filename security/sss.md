@@ -44,7 +44,7 @@ Generate password
 pwgen -s -y -B 12 1 > password.txt
 ```
 
-Split the password and remove in a safe way
+Split the password
 ``` bash
 secret-share-split --count 5 --threshold 2 password.txt >shares.txt
 cat password.txt | sha256sum > password.sha
@@ -102,7 +102,7 @@ Generate password
 pwgen -s -y -B 12 1 > password.txt
 ```
 
-Split the password and remove in a safe way
+Split the password
 ``` bash
 cat password.txt | $sss_home/bin/python $sss_home/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
