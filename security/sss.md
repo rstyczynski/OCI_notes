@@ -6,7 +6,7 @@ Imagine cloud tenancy cloud account that can literally do everything with all th
 
 As cloud technology continues to evolve, ensuring robust security measures is essential to protect sensitive data and resources. Several techniques can significantly improve security, including the use of strong passwords and the implementation of Multi-Factor Authentication (MFA). Recent achievement is adoption of Fast Identity Online (FIDO) standard, enabling third party trust source device to be used in authentication process. Some systems already replaced passwords with FIDO devices as e.g. fingerprint scanner available in Mac computers. Anyway it does not matter if single person provides the password (sth he/she knows) or uses FIDO (sth he/she has). Still it's the single person with power to control whole system.
 
-Cloud providers as Oracle OCI promotes best practices related to notification about power user (break glass) connection to the system, and modification of power user properties. It's good as security team may closely look into audit stream to discover why this individual has connected on the top privileged account. Being notified, owner may react on potential improper behavior, however it may be too late, as attacker may destroy a lot in seconds. That's the consequence of having power of API.
+Cloud providers as Oracle OCI promote best practices related to notification about power user (break glass) connection to the system, and modification of power user properties. It's good as security team may closely look into audit stream to discover why this individual has connected on the top privileged account. Being notified, owner may react on potential improper behavior, however it may be too late, as attacker may destroy a lot in seconds. That's the consequence of having power of API.
 
 To remove the risk power users shall connect under supervisory of several persons under special access procedure. Let's split the password and share among two board members. It's called secret sharing. In case of emergency they will give parts of the password, and the access will be possible. 
 
@@ -140,7 +140,7 @@ This approach enhances security by distributing the responsibility and making un
 4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of corrupted share holders.
 
 # Adi Shamir
-You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful — simple and unbreakable. Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
+You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful — simple and unbreakable (till the time of quantum computing). Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
 
 # References
 ## General
