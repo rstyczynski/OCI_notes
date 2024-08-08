@@ -18,9 +18,7 @@ A more robust solution is to use Shamir's Secret Sharing scheme. This involves d
 
 Shamir's Secret Sharing scheme establishes secure and redundant way of storing highly critical passwords. Adoption of such scheme must be confirmed by the governance and security officers, who should establish appropriate procedures and take care of trainings to build real awareness of secret sharing importance. 
 
-Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. 
-
-Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of achievable solutions to achieve it.
+Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of solutions to achieve it.
 
 Take a look at two exemplary model codes. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
