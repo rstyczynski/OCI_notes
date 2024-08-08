@@ -1,7 +1,8 @@
 #!/bin/bash
 
-: ${sss_session:=$HOME/sss/generate}
-: ${sss_input:=$HOME/sss/input}
+: ${sss_home:=$HOME/sss}
+: ${sss_session:=$sss_home/generate}
+: ${sss_input:=$sss_home/input}
 
 numbers=(1 2 3 4 5)
 shuffled_numbers=$(echo "${numbers[@]}" | tr ' ' '\n' | shuf | tr '\n' ' ')
