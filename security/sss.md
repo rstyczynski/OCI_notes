@@ -36,9 +36,10 @@ brew install coreutils
 
 Prepare environment
 ``` bash
-shares_working_dir=$HOME/sss/generate
-mkdir -p $shares_working_dir
-cd $shares_working_dir
+sss_home=$HOME/sss
+sss_session=$sss_home/generate
+mkdir -p $sss_session
+cd $sss_session
 ```
 
 Generate password
@@ -79,24 +80,27 @@ brew install coreutils
 
 Prepare environment
 ``` bash
-shares_working_dir=$HOME/sss/generate
-mkdir -p $shares_working_dir
-cd $shares_working_dir
+sss_home=$HOME/sss
+sss_session=$sss_home/generate
+mkdir -p $sss_session
+cd $sss_session
 ```
 
 Install Python library and get CLI Python code
 ``` bash
+cd $sss_home
 cd ..
-Python3 -m venv sss
+python3 -m venv sss
 source sss/bin/activate
 pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > bin/sss-split.py
-chmod +x bin/sss-split.py
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > bin/sss-combine.py
-chmod +x bin/sss-combine.py
-cd -
+cd $sss_home/bin
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-split.py > sss-split.py
+chmod +x sss-split.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss-combine.py > sss-combine.py
+chmod +x sss-combine.py
+cd $sss_session
 ```
 
 Generate password
@@ -106,7 +110,7 @@ pwgen -s -y -B 12 1 > password.txt
 
 Split the password and remove in a safe way
 ``` bash
-cat password.txt | ../sss/bin/python ../bin/sss-split.py 2 5 >shares.txt
+cat password.txt | $sss_home/bin/python $sss_home/bin/sss-split.py 2 5 >shares.txt
 cat password.txt | sha256sum > password.sha
 gshred -u -n 3 password.txt 
 ```
@@ -115,7 +119,7 @@ Take two random shares available fragments and reconstruct the password
 ``` bash
 cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-cat shares_subset.txt | ../sss/bin/python ../bin/sss-combine.py > password_recombined.txt
+cat shares_subset.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py > password_recombined.txt
 cat password_recombined.txt | sha256sum > password_recombined.sha
 ```
 
