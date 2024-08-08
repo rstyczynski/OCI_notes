@@ -15,12 +15,19 @@ for share_pos in ${numbers[@]}; do
     read -p "Provide share, and press Enter: " share
     if [ ! -z "$share" ]; then
         echo -n $share > "$sss_input"/share.tmp
+
+        share_sha=$(sha256sum "$sss_input"/share.tmp | awk '{print $1}')
+        mv "$sss_input"/share.tmp "$sss_input"/$share_sha  
     else
-        share_no=${shuffled_array[$(( share_pos - 1))]}
+        if [ -f "$sss_session/shares.txt" ]; then
+            share_no=${shuffled_array[$(( share_pos - 1))]}
+            echo "None provided. Taking share no. $share_no from generated ones"
+            echo -n $(tail -$share_no $sss_session/shares.txt | head -1) > "$sss_input"/share.tmp
         
-        echo "None provided. Taking share no. $share_no from generated ones"
-        echo -n $(tail -$share_no $sss_session/shares.txt | head -1) > "$sss_input"/share.tmp
+            share_sha=$(sha256sum "$sss_input"/share.tmp | awk '{print $1}')
+            mv "$sss_input"/share.tmp "$sss_input"/$share_sha    
+        else 
+            echo "None provided, and shares.txt does not exit. Nothing sent."
+        fi
     fi
-    share_sha=$(sha256sum "$sss_input"/share.tmp | awk '{print $1}')
-    mv "$sss_input"/share.tmp "$sss_input"/$share_sha    
 done
