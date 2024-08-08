@@ -63,7 +63,7 @@ cat password_recombined.txt | sha256sum > password_recombined.sha
 Validate and view the recovered password.
 ``` bash
 diff password.sha password_recombined.sha && echo OK || echo Error
-cat password_recombined.txt
+cat password.txt password_recombined.txt
 ```
 
 # secretsharing Python package
@@ -121,8 +121,7 @@ cat password_recombined.txt | sha256sum > password_recombined.sha
 Validate and view the password
 ``` bash
 diff password.sha password_recombined.sha && echo OK || echo Error
-
-cat password_recombined.txt
+cat password.txt password_recombined.txt
 ```
 
 # Wikipedia
