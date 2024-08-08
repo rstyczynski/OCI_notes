@@ -151,6 +151,7 @@ You may be familiar with Shamir, as he is one of the inventors of the well-known
 * https://github.com/dsprenkels/sss-cli
 * https://github.com/blockstack/secret-sharing
 * https://dl.acm.org/doi/pdf/10.1145/359168.359176
+* https://github.com/dashpay/dips/blob/master/dip-0006/bls_m-of-n_threshold_scheme_and_dkg.md
 
 ## Oracle
 * https://www.oracle.com/a/ocom/docs/security/oci-iam-emergency-access-accounts-v1.8.pdf
