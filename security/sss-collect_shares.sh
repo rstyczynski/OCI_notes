@@ -36,7 +36,7 @@ collect_shares $threshold
 # combine input
 function reconstruct_secrets {
     : > $sss_session/shares_received.txt
-    for file in "$sss_input"/*; do
+    for file in "$sss_shares"/*; do
             cat "$file" >> $sss_session/shares_received.txt
             echo >> $sss_session/shares_received.txt
     done
