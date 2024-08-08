@@ -5,33 +5,29 @@ threshold=$1
 #
 # collect password pieces
 #
-
-shares_working_dir=$HOME/sss/generate
-shares_input_dir=$HOME/sss/shares_input
-shares_dir=$HOME/sss/shares
-
-mkdir -p $shares_dir; rm -rf $shares_dir/*
-mkdir -p $shares_input_dir; rm -rf $shares_input_dir/*
+: ${sss_session:=$HOME/sss/generate}
+: ${sss_input:=$HOME/sss/input}
+: ${sss_shares:=$HOME/sss/shares}
 
 function collect_shares {
     threshold=$1
 
     ready_cnt=0
     while [ "$ready_cnt" -lt "$threshold" ]; do
-        read -p "Put share files in input directory and press enter. One share per file. Input directory: $shares_input_dir"
-        cat $shares_working_dir/shares_sha.txt | while read -r expected_sha; do
-            if [ -f "$shares_input_dir"/$expected_sha ]; then
-                if [ -f "$shares_dir"/$expected_sha ]; then
+        read -p "Put share files in input directory and press enter. One share per file. Input directory: $sss_input"
+        cat $sss_session/shares_sha.txt | while read -r expected_sha; do
+            if [ -f "$sss_input"/$expected_sha ]; then
+                if [ -f "$sss_shares"/$expected_sha ]; then
                     echo $expected_sha - ready
                 else
                     echo $expected_sha - provided
-                    cp "$shares_input_dir"/$expected_sha "$shares_dir"
+                    cp "$sss_input"/$expected_sha "$sss_shares"
                 fi
             else
                 echo $expected_sha - expected
             fi
         done
-        ready_cnt=$(ls "$shares_dir" | wc -l)
+        ready_cnt=$(ls "$sss_shares" | wc -l)
     done
     echo "Required shares ready."
 }
@@ -39,10 +35,10 @@ collect_shares $threshold
 
 # combine input
 function reconstruct_secrets {
-    : > $shares_working_dir/shares_received.txt
-    for file in "$shares_input_dir"/*; do
-            cat "$file" >> $shares_working_dir/shares_received.txt
-            echo >> $shares_working_dir/shares_received.txt
+    : > $sss_session/shares_received.txt
+    for file in "$sss_input"/*; do
+            cat "$file" >> $sss_session/shares_received.txt
+            echo >> $sss_session/shares_received.txt
     done
 }
 reconstruct_secrets
