@@ -140,7 +140,7 @@ This approach enhances security by distributing the responsibility and making un
 4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of corrupted share holders.
 
 # Adi Shamir
-You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful—simple and unbreakable. Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
+You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful — simple and unbreakable. Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
 
 # References
 ## General
