@@ -32,7 +32,7 @@ function collect_shares {
         done
         ready_cnt=$(ls "$sss_shares" | wc -l)
     done
-    echo "Required shares ready."
+    echo "Required shares collected."
 }
 collect_shares $threshold
 
@@ -43,5 +43,6 @@ function reconstruct_secrets {
             cat "$file" >> $sss_session/shares_received.txt
             echo >> $sss_session/shares_received.txt
     done
+    echo "Required shares ready."
 }
 reconstruct_secrets
