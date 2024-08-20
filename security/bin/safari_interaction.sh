@@ -103,6 +103,7 @@ expected_password_input=$(get_yaml_field field)
 
 cd $sss_session
 
+echo "Waiting for the password..."
 while [ ! -f "password_recovered.txt" ]; do
     echo "Waiting for the password..."
     sleep 1
