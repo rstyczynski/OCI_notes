@@ -14,8 +14,6 @@ fi
 
 expected_arg=$3
 
-set -e
-
 read -p "In Safari blowser open target ${system_name} web page, and place cursor on destination password field. Press Enter once ready."
 
 session_tmp=$(mktemp -d)
