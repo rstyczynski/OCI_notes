@@ -22,7 +22,7 @@ Owning the master password is like owning the code to the nuclear button; when t
 
 Take a look at two exemplary model codes. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
-# sss-cli
+## sss-cli
 
 First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
 
@@ -70,7 +70,7 @@ Validate the recovered password.
 diff password.sha password_recombined.sha && echo OK || echo Error
 ```
 
-# secretsharing Python package
+## secretsharing Python package
 
 Let's do the same using regular Python library - secretsharing.
 
@@ -133,32 +133,32 @@ Validate the password
 diff password.sha password_recombined.sha && echo OK || echo Error
 ```
 
-# Wikipedia
+## Wikipedia
 
 The Wikipedia article explaining Shamir’s Secret Sharing presents Python code with low-level mathematical operations using core Python features without any external libraries. The code works for short secrets up to 15 characters but can be adapted to handle longer secrets by splitting them into 15-character fragments and processing each fragment separately. This simple code can effectively manage longer secrets if needed. The advantage of this code is its simplicity, which allows it to be easily controlled by maintainers with the appropriate knowledge.
 
-The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss_wikipedia-demo.py)
+The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/sss_wikipedia-demo.py)
 
-# Conclusion
+## Conclusion
 
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged accounts' passwords in environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, reducing the risk of unauthorized access and single points of failure.
 
 This approach enhances security by distributing the responsibility and making unauthorized access significantly more challenging. Adoption of this scheme should be owned by governance and security officers, emphasizing proper procedures and training IT staff to build awareness of its importance.
 
-# Implementation notes
+## Implementation notes
 
 1. Computer should be air gapped i.e. physically disconnected from internet and any other network.
 2. Operation should be performed on encrypted ramdisk, created before use and destroyed after
 3. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed.
 4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of corrupted share holders.
 
-# Adi Shamir
+## Adi Shamir
 
 You may be familiar with Shamir, as he is one of the inventors of the well-known RSA cryptography standard, which stands for Rivest, Shamir, and Adleman. Rivest was the person who came up with the ideas, Shamir made it robust using math, and Adleman was responsible for testing the security of the concept. RSA is beautiful — simple and unbreakable (till the time of quantum computing). Shamir’s Secret Sharing (SSS) is the same. All thanks to mathematics.
 
-# References
+## References
 
-## General
+### General
 
 * <https://en.wikipedia.org/wiki/Adi_Shamir>
 * <https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing>
@@ -169,12 +169,12 @@ You may be familiar with Shamir, as he is one of the inventors of the well-known
 * <https://dl.acm.org/doi/pdf/10.1145/359168.359176>
 * <https://github.com/dashpay/dips/blob/master/dip-0006/bls_m-of-n_threshold_scheme_and_dkg.md>
 
-## Oracle
+### Oracle
 
 * <https://www.oracle.com/a/ocom/docs/security/oci-iam-emergency-access-accounts-v1.8.pdf>
 * <https://www.oracle.com/a/ocom/docs/whitepaper-zero-trust-security-oci.pdf>
 * <https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/configure-fido-security.html>
 
-## Industry
+### Industry
 
 * <https://www.cloudflare.com/en-gb/dns/dnssec/root-signing-ceremony/>
