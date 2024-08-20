@@ -101,6 +101,13 @@ expected_arg=$(get_yaml_field arg)
 expected_arg_value=$(get_yaml_field arg_value)
 expected_password_input=$(get_yaml_field field)
 
+
+while [ ! -f "$sss_home/password_recovered.txt" ]; do
+    echo "Waiting for the password..."
+    sleep 1
+done
+echo "Ready."
+
 echo "Navigate to ${system_name} desired web page."
 cat <<_EOF
 Expected destination:
@@ -147,16 +154,6 @@ while [ "$state" != "ready_for_password" ]; do
     sleep 0.2
 done
 echo "Web page ready."
-
-#
-# ready for password paste
-#
-
-while [ ! -f "$PWD/password_recovered.txt" ]; do
-    echo "Waiting for the password..."
-    sleep 1
-done
-echo "Ready."
 
 echo "Sending password."
 # password paste
