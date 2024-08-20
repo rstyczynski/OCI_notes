@@ -101,8 +101,9 @@ expected_arg=$(get_yaml_field arg)
 expected_arg_value=$(get_yaml_field arg_value)
 expected_password_input=$(get_yaml_field field)
 
+cd $sss_session
 
-while [ ! -f "$sss_home/password_recovered.txt" ]; do
+while [ ! -f "password_recovered.txt" ]; do
     echo "Waiting for the password..."
     sleep 1
 done
