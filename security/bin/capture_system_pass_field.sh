@@ -78,7 +78,7 @@ arg_value: ${expected_arg_value}
 field: ${current_password_input}
 _EOF
 
-echo Data written to 
+echo Data written to ${system_name}.yaml
 cat ${system_name}.yaml 
 
 rm -rf "$session_tmp"
