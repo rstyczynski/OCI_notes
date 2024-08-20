@@ -65,7 +65,7 @@ if [ "$address_only" = "yes" ]; then
     expected_URL=$(echo $current_URL | cut -f1 -d'?' | cut -f1-3 -d'/')
 fi
 
-expected_arg_value=$(echo $url | tr '[?&]' '\n' | grep "$expected_arg" | cut -f2 -d=)
+expected_arg_value=$(echo $expected_URL | tr '[?&]' '\n' | grep "$expected_arg" | cut -f2 -d=)
 
 current_password_input=$(osascript $session_tmp/get_input_name_from_safari.applescript)
 
