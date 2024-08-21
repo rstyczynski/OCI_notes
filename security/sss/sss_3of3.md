@@ -1,6 +1,6 @@
 # Provide password to the target system
 
-Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct is using defined subset of pieces. First part introduced SSS theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's focus on password supply now.
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's focus on password supply now.
 
 ## Password supply
 
