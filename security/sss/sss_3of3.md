@@ -51,9 +51,9 @@ Get Safari interaction code.
 
 ``` bash
 cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/safari_capture_password_descriptor.sh > safari_capture_password_descriptor.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/safari_capture_password_descriptor.sh > safari_capture_password_descriptor.sh
 chmod +x safari_capture_password_descriptor.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/safari_interaction.sh > safari_interaction.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/safari_interaction.sh > safari_interaction.sh
 chmod +x safari_interaction.sh
 cd -
 ```

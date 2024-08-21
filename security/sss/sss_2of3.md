@@ -22,11 +22,11 @@ Get share collection code.
 
 ``` bash
 cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/sss-collect_shares.sh > sss-collect_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-collect_shares.sh > sss-collect_shares.sh
 chmod +x sss-collect_shares.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/sss-share-fingerprints.sh > sss-share-fingerprints.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-share-fingerprints.sh > sss-share-fingerprints.sh
 chmod +x sss-share-fingerprints.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/bin/sss-provide_shares.sh > sss-provide_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-provide_shares.sh > sss-provide_shares.sh
 chmod +x sss-provide_shares.sh
 cd -
 ```
