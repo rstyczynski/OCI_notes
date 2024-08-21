@@ -1,5 +1,9 @@
 # Provide password to the target system
 
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct is using defined subset of pieces. First part introduced SSS theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's focus on password supply now.
+
+## Password supply
+
 On this stage you are able to split your secreted among five shareholders, and reconstruct the password from any two shares of of available five. In real life it means that two of board members can open access to critical resource as DRCC or OCI Tenancy.
 
 Tha final step is to provide password into login dialog box in such way that operator will not know the password. Having such procedure password mey be reused in the future, and it's not mandatory to change it to eliminate risk that operator will remember the secret and used it in unauthorized way.
