@@ -86,4 +86,6 @@ Once executed script with switch to Safari, which will be started if not running
 
 ## Conclusion
 
-This article presented how to supply password in secure way to the login web page. It's a demo, however presented model is quite close to potential production use. An honest operator will not see the password in any point of the process. Real implementation should use encrypted ramdisk to store session and temporary files. Good idea is to store password in additionally encrypted form with random password to prevent from potential temptation to see the password. Real production procedure should change the password as the consequence of password recovery and use process.
+This article presented how to supply password in secure way to the login web page. It's a demo, however presented model is quite close to potential production use. An honest operator will not see the password in any point of the process. Real implementation should use encrypted ramdisk to store session and temporary files. Good idea is to store password in additionally encrypted form to prevent from potential temptation to see it. Real production procedure should change the password as the consequence of password recovery and use process.
+
+

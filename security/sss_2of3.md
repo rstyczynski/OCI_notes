@@ -1,5 +1,9 @@
 # Share collection model
 
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct is using defined subset of pieces. First part introduced SSS theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication.
+
+## Share collection
+
 Share collection process collects shares from shareholders, who copy their pieces into specified input directory. The collection process stops when required number of shares is received.
 
 Before proceeding, it's required that you executed share generation process from first part of this blog, using secretsharing Python package (second exemplary code).

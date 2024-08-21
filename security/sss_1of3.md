@@ -1,5 +1,9 @@
 # Shamir's Secret Sharing scheme
 
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct is using defined subset of pieces. First part introduced SSS theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication.
+
+## Overview
+
 Cloud technology has revolutionized the way businesses and individuals manage and deploy their IT resources, offering flexibility, scalability, security and cost efficiency. Providing advantages, the cloud model introduces new security challenges, primarily due to the accessibility of cloud systems through APIs.
 
 Imagine cloud tenancy cloud account that can literally do everything with all the resources. Imagine Oracle DRCC owner account that can do all good and bad things with the whole OCI region. That's a huge power and huge responsibility. Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. Would you like to be in possession of the master password? I'm sure not.
@@ -20,9 +24,11 @@ Shamir's Secret Sharing scheme establishes secure and redundant way of storing h
 
 Owning the master password is like owning the code to the nuclear button; when the password will be grabbed by an enemy, consequences may be unrecoverable. Implementing proper security procedure eliminates this serious problem. Shamir's Secret Sharing scheme is one of solutions to achieve it.
 
+## Password split
+
 Take a look at two exemplary model codes. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
-## sss-cli
+### sss-cli
 
 First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
 
@@ -70,7 +76,7 @@ Validate the recovered password.
 diff password.sha password_recombined.sha && echo OK || echo Error
 ```
 
-## secretsharing Python package
+### secretsharing Python package
 
 Let's do the same using regular Python library - secretsharing.
 
