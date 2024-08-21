@@ -158,9 +158,9 @@ This approach enhances security by distributing the responsibility and making un
 ## Implementation notes
 
 1. Computer should be air gapped i.e. physically disconnected from internet and any other network.
-2. Operation should be performed on encrypted ramdisk, created before use and destroyed after
+2. Operation should be performed on encrypted ram-disk, created before use and destroyed after
 3. Shares may be stored in encrypted form on USB stick with backup on a paper in ASCII and QR Code for easy retrieval. Encryption password is remembered by share's owner, who enters it to decrypt his share when needed.
-4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of corrupted share holders.
+4. To improve safety each share owner holds set of fingerprints of all other shares, to protect against providing wrong share by one of unhonest share holders.
 
 ## References
 
