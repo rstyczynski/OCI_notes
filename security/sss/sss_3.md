@@ -1,6 +1,6 @@
 # Shamir's Secret Sharing scheme - share collection model
 
-Shamir's Secret Sharing scheme allows to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. [First part](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_1.md) of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
+Shamir's Secret Sharing scheme allows to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. [First part](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_1.md) of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) shows how to rebuild the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
 
 Let's focus now on rebuilding the password from subset of shares.
 
