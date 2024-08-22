@@ -81,7 +81,7 @@ pip3 install --upgrade pip
 pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
 
 cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/binsss-split.py > sss-split.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-split.py > sss-split.py
 chmod +x sss-split.py
 curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-combine.py > sss-combine.py
 chmod +x sss-combine.py
