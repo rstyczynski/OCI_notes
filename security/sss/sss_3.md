@@ -47,7 +47,7 @@ $sss_home/bin/sss-collect_shares.sh 2
 
 Now systems awaits for shares.
 
-In *another terminal* simulate share providing process. You can provide shares manualy, or press enter to randomy select shares from generated ones in previous step. We still are in a lab environment, having access to all the data, so we can play with shares.
+In *another terminal* simulate share providing process. 
 
 ``` bash
 export sss_home=$HOME/sss
@@ -56,17 +56,19 @@ export sss_input=$HOME/sss/input
 $sss_home/bin/sss-provide_shares.sh
 ```
 
+You can provide shares manually, or press enter to randomly select shares from generated ones in previous step. We still are in a lab environment, having access to all the data, so we can play with shares.
+
 Build secret from collected shares.
 
 ``` bash
-cat shares_received.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py | tr -d '\n' > password_recovered.txt
-cat password_recovered.txt | sha256sum > password_recovered.sha
+cat shares_received.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py > password_recombined.txt
+cat password_recombined.txt | sha256sum > password_recombined.sha
 ```
 
 Validate the password
 
 ``` bash
-diff password.sha password_recovered.sha && echo OK || echo Error
+diff password.sha password_recombined.sha && echo OK || echo Error
 ```
 
 The password is recovered form just any two parts of five generated shares.
