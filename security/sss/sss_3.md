@@ -1,41 +1,16 @@
-# Provide password to the target system
+# Shamir's Secret Sharing scheme - share collection model
 
-Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's focus on password supply now.
+using Secret Sharing scheme
 
-## Password supply
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. [First part](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_1.md) of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
 
-On this stage you are able to split your secreted among five shareholders, and reconstruct the password from any two shares of of available five. In real life it means that two of board members can open access to critical resource as DRCC or OCI Tenancy.
+Let's focus now on rebuilding the password from subset of shares.
 
-Tha final step is to provide password into login dialog box in such way that operator will not know the password. Having such procedure password mey be reused in the future, and it's not mandatory to change it to eliminate risk that operator will remember the secret and used it in unauthorized way.
+## Share collection
 
-## Target system interaction
+Share collection process collects shares from shareholders, who copy their pieces into specified input directory. The collection process stops when required number of shares is received.
 
-This exemplary procedure assumes that OSX Safari is used to reach OCI console. With both it's possible to script Safari interaction using AppleScript plus OSX System Events. All the code is contained in a bash script, which writes AppleScript to temporary directory and executes it to:
-
-1. validate current webpage name
-2. validate current URL
-3. validate current URL's parameter value
-4. validate that active field is the one to get password.
-
-Once all the above conditions are met, script uses remote JavaScript invocation to set password field value to actual password taken from SSS recovery step.
-
-## Target system description
-
-To make this demo a little more realistic, target system is described using data structure, specifying webpage, url, parameter with expected value, and target password field name. Demo comes with script to create below structure, to make it easier to adjust code to other purposes. We will capture data for OCI login page
-
-``` yaml
---
-name: oci
-webpage: Oracle Cloud Infrastructure | Sign In
-url: https://login.eu-frankfurt-1.oraclecloud.com
-arg: tenant
-arg_value: tenant1
-field: password
-```
-
-## OCI login password supply
-
-Let's try now to configure connection to Safari browser with web page discovery and creation of password destination descriptor. With this we will supply password the the OCI login process. Note that this process works only on OSX as it uses OS level features.
+Before proceeding, it's required that you executed share generation process from first part of this blog, using secretsharing Python package (second exemplary code).
 
 Prepare environment
 
@@ -47,49 +22,57 @@ export sss_shares=$HOME/sss/shares; mkdir -p $sss_shares
 cd $sss_session
 ```
 
-Get Safari interaction code.
+Get share collection code.
 
 ``` bash
 cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/safari_capture_password_descriptor.sh > safari_capture_password_descriptor.sh
-chmod +x safari_capture_password_descriptor.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/safari_interaction.sh > safari_interaction.sh
-chmod +x safari_interaction.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-collect_shares.sh > sss-collect_shares.sh
+chmod +x sss-collect_shares.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-share-fingerprints.sh > sss-share-fingerprints.sh
+chmod +x sss-share-fingerprints.sh
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-provide_shares.sh > sss-provide_shares.sh
+chmod +x sss-provide_shares.sh
 cd -
 ```
 
-## Build password target descriptor
-
-We will create password field descriptor for a fake tenancy1, which does exist in the OCI, however we have no access to it. It does not matter, as the success of this exercise is to pass SSS password to OCI login field.
-
-OCI login URL is complex, but we are interested only in the address and the value of 'tenant' parameter.
+On this stage, share eneration process is extened by preparation of sha set. Having a list of sha fingeprints make it easy to detect if provided data is one of shares or it's a fake data. In target solution such list shuld be distributed to each shareholder as each of them may need to initiate password recovery process.
 
 ``` bash
-$sss_home/bin/safari_capture_password_descriptor.sh oci_tenant1 address_only tenant
+cat shares.txt | $sss_home/bin/sss-share-fingerprints.sh > shares_sha.txt
 ```
 
-You will be requested by the script to open target tenant1 login web page at Safari, and place cursor on destination password field. Once ready, press enter to get oci_tenant1.yaml file ready. The file should look like the following.
-
-``` yaml
---
-name: oci_tenant1
-webpage: Oracle Cloud Infrastructure | Sign In
-url: https://login.eu-frankfurt-1.oraclecloud.com
-arg: tenant
-arg_value: tenant1
-field: password
-```
-
-Now you are ready to supply the password to OCI login. Close OCI login page, and close Safari. Switch to terminal and run below script, It's assumed that both previous steps were executed and password file is in place.
+Execute share collection procedure. This procedure will finish after reception of two shares identified by sha fingerprint, as this exemplary process expects at least two shares.
 
 ``` bash
-$sss_home/bin/safari_interaction.sh oci_tenant1.yaml
+$sss_home/bin/sss-collect_shares.sh 2
 ```
 
-Once executed script with switch to Safari, which will be started if not running, and will listen to active web page. You have to open OCI login form for tenant1 tenancy. Once ready script will place password in the proper input field.
+Now systems awaits for shares.
+
+In *another terminal* simulate share providing process. You can provide shares manualy, or press enter to randomy select shares from generated ones in previous step. We still are in a lab environment, having access to all the data, so we can play with shares.
+
+``` bash
+export sss_home=$HOME/sss
+export sss_session=$sss_home/generate
+export sss_input=$HOME/sss/input
+$sss_home/bin/sss-provide_shares.sh
+```
+
+Build secret from collected shares.
+
+``` bash
+cat shares_received.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py | tr -d '\n' > password_recovered.txt
+cat password_recovered.txt | sha256sum > password_recovered.sha
+```
+
+Validate the password
+
+``` bash
+diff password.sha password_recovered.sha && echo OK || echo Error
+```
+
+The password is recovered form just any two parts of five generated shares.
 
 ## Conclusion
 
-This article presented how to supply password in secure way to the login web page. It's a demo, however presented model is quite close to potential production use. An honest operator will not see the password in any point of the process. Real implementation should use encrypted ramdisk to store session and temporary files. Good idea is to store password in additionally encrypted form to prevent from potential temptation to see it. Real production procedure should change the password as the consequence of password recovery and use process.
-
-
+This article presented how to reconstruct secret password from minimal set of shares using Shamir's Secret Sharing. Provided code may be theoretically used in real life as sss-provide_shares.sh accepts user input. It makes possible data retrieval from paper, QR code. Support for other mediums as e.g. USB stick should be developed.

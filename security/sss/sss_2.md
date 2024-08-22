@@ -1,74 +1,121 @@
-# Share collection model
 
-Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's focus now on rebuilding the password from subset of shares.
+# Shamir's Secret Sharing scheme - password split
 
-## Share collection
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. [First part](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_1.md) of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
 
-Share collection process collects shares from shareholders, who copy their pieces into specified input directory. The collection process stops when required number of shares is received.
+Take a look at two selected SSS tools. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
 
-Before proceeding, it's required that you executed share generation process from first part of this blog, using secretsharing Python package (second exemplary code).
+### sss-cli
+
+First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
+
+Install tools; adjust this part for your system.
+
+``` bash
+brew install vitkabele/tap/sss-cli
+brew install pwgen
+```
 
 Prepare environment
 
 ``` bash
-export sss_home=$HOME/sss
-export sss_session=$sss_home/generate; mkdir -p $sss_session
-export sss_input=$HOME/sss/input; mkdir -p $sss_input
-export sss_shares=$HOME/sss/shares; mkdir -p $sss_shares
+sss_home=$HOME/sss
+sss_session=$sss_home/generate
+mkdir -p $sss_session
 cd $sss_session
 ```
 
-Get share collection code.
+Generate password
 
 ``` bash
+pwgen -s -y -B 12 1 > password.txt
+```
+
+Split the password
+
+``` bash
+secret-share-split --count 5 --threshold 2 password.txt >shares.txt
+cat password.txt | sha256sum > password.sha
+```
+
+Take two random shares available fragments and reconstruct the password
+
+``` bash
+cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 > shares_subset.txt
+
+cat shares_subset.txt | secret-share-combine > password_recombined.txt
+cat password_recombined.txt | sha256sum > password_recombined.sha
+```
+
+Validate the recovered password.
+
+``` bash
+diff password.sha password_recombined.sha && echo OK || echo Error
+```
+
+### secretsharing Python package
+
+Let's do the same using regular Python library - secretsharing.
+
+Install tools; adjust this code for your system.
+
+``` bash
+brew install pwgen
+```
+
+Prepare environment
+
+``` bash
+sss_home=$HOME/sss
+sss_session=$sss_home/generate; mkdir -p $sss_session
+cd $sss_session
+```
+
+Install Python library and get CLI Python code
+
+``` bash
+cd $sss_home/..
+python3 -m venv sss
+source sss/bin/activate
+pip3 install --upgrade pip
+pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
+
 cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-collect_shares.sh > sss-collect_shares.sh
-chmod +x sss-collect_shares.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-share-fingerprints.sh > sss-share-fingerprints.sh
-chmod +x sss-share-fingerprints.sh
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-provide_shares.sh > sss-provide_shares.sh
-chmod +x sss-provide_shares.sh
-cd -
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/binsss-split.py > sss-split.py
+chmod +x sss-split.py
+curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-combine.py > sss-combine.py
+chmod +x sss-combine.py
+cd $sss_session
 ```
 
-On this stage, share eneration process is extened by preparation of sha set. Having a list of sha fingeprints make it easy to detect if provided data is one of shares or it's a fake data. In target solution such list shuld be distributed to each shareholder as each of them may need to initiate password recovery process.
+Generate password
 
 ``` bash
-cat shares.txt | $sss_home/bin/sss-share-fingerprints.sh > shares_sha.txt
+pwgen -s -y -B 12 1 > password.txt
 ```
 
-Execute share collection procedure. This procedure will finish after reception of two shares identified by sha fingerprint, as this exemplary process expects at least two shares.
+Split the password
 
 ``` bash
-$sss_home/bin/sss-collect_shares.sh 2
+cat password.txt | $sss_home/bin/python $sss_home/bin/sss-split.py 2 5 >shares.txt
+cat password.txt | sha256sum > password.sha
 ```
 
-Now systems awaits for shares.
-
-In *another terminal* simulate share providing process. You can provide shares manualy, or press enter to randomy select shares from generated ones in previous step. We still are in a lab environment, having access to all the data, so we can play with shares.
+Take two random shares available fragments and reconstruct the password
 
 ``` bash
-export sss_home=$HOME/sss
-export sss_session=$sss_home/generate
-export sss_input=$HOME/sss/input
-$sss_home/bin/sss-provide_shares.sh
-```
+cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
 
-Build secret from collected shares.
-
-``` bash
-cat shares_received.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py | tr -d '\n' > password_recovered.txt
-cat password_recovered.txt | sha256sum > password_recovered.sha
+cat shares_subset.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py > password_recombined.txt
+cat password_recombined.txt | sha256sum > password_recombined.sha
 ```
 
 Validate the password
 
 ``` bash
-diff password.sha password_recovered.sha && echo OK || echo Error
+diff password.sha password_recombined.sha && echo OK || echo Error
 ```
 
-The password is recovered form just any two parts of five generated shares.
+## Conclusion
 
-# Conclusion
-
-This article presented how to reconstruct secret password from minimal set of shares using Shamir's Secret Sharing. Provided code may be theoretically used in real life as sss-provide_shares.sh accepts user input. It makes possible data retrieval from paper, QR code. Support for other mediums as e.g. USB stick should be developed.
+This part presented how to split the password into shared using regular available tools. Sample code may be reused for production use adding some extra logic increasing security and usability. Note that libraries does not product standard data, and shares cannot be recombined using different tool than used to make a split.

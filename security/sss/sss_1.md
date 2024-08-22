@@ -1,6 +1,8 @@
 # Shamir's Secret Sharing scheme
 
-Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory, and presented how to create shares. Second one rebuilds the secret from subset of shares. The last one - third supplies password to web page authentication. Let's start with introduction to SSS and spiting a password into shares.
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
+
+Let's start with introduction to SSS and spiting a password into shares.
 
 ## Overview
 
@@ -33,121 +35,6 @@ You may be familiar with Shamir, as he is one of the inventors of the well-known
 The Wikipedia article explaining Shamir’s Secret Sharing presents Python code with low-level mathematical operations using core Python features without any external libraries. The code works for short secrets up to 15 characters but can be adapted to handle longer secrets by splitting them into 15-character fragments and processing each fragment separately. This simple code can effectively manage longer secrets if needed. The advantage of this code is its simplicity, which allows it to be easily controlled by maintainers with the appropriate knowledge.
 
 The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss_wikipedia-demo.py)
-
-## Password split
-
-Take a look at two exemplary model codes. Code was prepared on OSX with use of regular utilities and Python code. May be used at any regular system; all you potentially need to do - is to adjust packages install for your case.
-
-### sss-cli
-
-First example uses code developed by vitkabele. Before use this code has to be examined and documented. It may be smart to use own code, as the implementation is not complex thanks to straight forward theory behind. Code handles very long secrets.
-
-Install tools; adjust this part for your system.
-
-``` bash
-brew install vitkabele/tap/sss-cli
-brew install pwgen
-```
-
-Prepare environment
-
-``` bash
-sss_home=$HOME/sss
-sss_session=$sss_home/generate
-mkdir -p $sss_session
-cd $sss_session
-```
-
-Generate password
-
-``` bash
-pwgen -s -y -B 12 1 > password.txt
-```
-
-Split the password
-
-``` bash
-secret-share-split --count 5 --threshold 2 password.txt >shares.txt
-cat password.txt | sha256sum > password.sha
-```
-
-Take two random shares available fragments and reconstruct the password
-
-``` bash
-cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 > shares_subset.txt
-
-cat shares_subset.txt | secret-share-combine > password_recombined.txt
-cat password_recombined.txt | sha256sum > password_recombined.sha
-```
-
-Validate the recovered password.
-
-``` bash
-diff password.sha password_recombined.sha && echo OK || echo Error
-```
-
-### secretsharing Python package
-
-Let's do the same using regular Python library - secretsharing.
-
-Install tools; adjust this code for your system.
-
-``` bash
-brew install pwgen
-```
-
-Prepare environment
-
-``` bash
-sss_home=$HOME/sss
-sss_session=$sss_home/generate; mkdir -p $sss_session
-cd $sss_session
-```
-
-Install Python library and get CLI Python code
-
-``` bash
-cd $sss_home/..
-python3 -m venv sss
-source sss/bin/activate
-pip3 install --upgrade pip
-pip3 install --upgrade --force-reinstall git+https://github.com/blockstack/secret-sharing
-
-cd $sss_home/bin
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/binsss-split.py > sss-split.py
-chmod +x sss-split.py
-curl -S https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss-combine.py > sss-combine.py
-chmod +x sss-combine.py
-cd $sss_session
-```
-
-Generate password
-
-``` bash
-pwgen -s -y -B 12 1 > password.txt
-```
-
-Split the password
-
-``` bash
-cat password.txt | $sss_home/bin/python $sss_home/bin/sss-split.py 2 5 >shares.txt
-cat password.txt | sha256sum > password.sha
-```
-
-Take two random shares available fragments and reconstruct the password
-
-``` bash
-cat shares.txt | perl -MList::Util=shuffle -wne 'print shuffle <>;' | head -2 >shares_subset.txt
-
-cat shares_subset.txt | $sss_home/bin/python $sss_home/bin/sss-combine.py > password_recombined.txt
-cat password_recombined.txt | sha256sum > password_recombined.sha
-```
-
-Validate the password
-
-``` bash
-diff password.sha password_recombined.sha && echo OK || echo Error
-```
 
 ## Conclusion
 
