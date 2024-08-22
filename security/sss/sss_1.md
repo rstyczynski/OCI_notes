@@ -1,6 +1,6 @@
 # Shamir's Secret Sharing scheme
 
-Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. First part of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
+Shamir's Secret Sharing scheme allow to split parts of the secret among number of holders with ability to reconstruct it using defined subset of pieces. [First part](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_1.md) of SSS article introduces the theory. [Second one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) presents how to create shares using regular tools. [Third one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md) rebuilds the secret from subset of shares, and [the last one](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md) - supplies password to web page authentication.
 
 Let's start with introduction to SSS and spiting a password into shares.
 
