@@ -36,6 +36,14 @@ The Wikipedia article explaining Shamir’s Secret Sharing presents Python code 
 
 The code with slight improvements is here: [sss_wikipedia-demo.py](https://raw.githubusercontent.com/rstyczynski/OCI_notes/main/security/sss/bin/sss_wikipedia-demo.py)
 
+## Hands on
+
+Knowing what is the SSS let's play with securing the password in the following three steps.
+
+1. [password split](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_2.md) 
+2. [recombine the password from subset of shares](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_3.md)
+3. [supply password to OCI login using OSX Safari](https://github.com/rstyczynski/OCI_notes/blob/main/security/sss/sss_4.md)
+
 ## Conclusion
 
 Shamir’s Secret Sharing scheme offers a robust solution for managing highly privileged accounts' passwords in environments, where security is paramount. The accessibility of cloud systems through APIs introduces significant security challenges, making strong passwords and Multi-Factor Authentication (MFA) essential. However, single-person control remains a risk, similar to having a nuclear button’s code. Shamir’s scheme mitigates this by splitting a master password among multiple trusted individuals, ensuring that a subset can reconstruct it, reducing the risk of unauthorized access and single points of failure.
