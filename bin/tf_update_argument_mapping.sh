@@ -194,4 +194,4 @@ function tf_update_argument_mapping_bulk {
   done
 }
 
-tf_update_argument_mapping_bulk /Users/rstyczynski/Documents/avaloq/terraform/oci-module-common-exacs
+tf_update_argument_mapping_bulk ./
