@@ -578,7 +578,7 @@ _function_info
     else
         # tip: replace --compartment-id URL with wrapper function
         # shellcheck disable=SC2016
-        wrapped_CLI=$(echo "$@" | sed -E 's|--compartment-id ([/\.][A-Za-z0-9_\./]*)|--compartment-id $(get_compartment_id \1)|')
+        wrapped_CLI=$(echo "$@" | sed -E 's|--compartment-id ([/\.][A-Za-z0-9_.\/-]*)|--compartment-id $(get_compartment_id \1)|')
         eval "$(which oci) $wrapped_CLI"
     fi
 }
