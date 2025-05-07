@@ -1,0 +1,2 @@
+domain_name	rdata	rtype	ttl
+instance_1.zrh.demo.com	instance-1.subnet.vcn.oraclevcn.com.	CNAME	18008

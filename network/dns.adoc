@@ -1,0 +1,51 @@
+= OCI DNS
+
+OCI provides two independent name resolution subsystems: public and private DNS. The private one is a regional resource associated with Virtual Cloud Network and the public is a regular Internet public network name server. The private one is reachable only for systems connected to the VCN locally or over FastConnect / IPSec, and the public service serves responses to all services around the world.
+
+OCI lacks tenancy level, inter-regional private name server service which is required to deliver private services naming support for high availability scenarios. This document proposes potential working solution for this missing capability.
+
+== Internet level name resolution
+
+Global name servers are hosted in Oracle Service Network of the OCI public cloud. It is assumed that OCI's global DNS is designed to be highly available in all respects. This service offers traffic management capabilities to distribute load among regions to minimize latency and provide high availability.
+
+Traffic manager can distribute requests to target systems based on the source networks. On one hand it may be used to direct customers to closer server locations to minimize latency, and on the other one you can split traffic by specific customers, what may be useful in case of shared systems.
+
+=== Failover support
+
+Traffic management cooperating with OCI Health Check service provides automated failover request distribution at the DNS layer. Names registered in the DNS zones may be associated with Health Check that controls eligibility to add specific record to the response. This technique constitutes automated load distribution reacting on resource unavailability, what may be used as one of pillars for both failover and disaster recovery.
+
+== Virtual Cloud Network level name resolution
+
+OCI Virtual Cloud Network (VCN) is a complete virtualized network infrastructure including layer 3 switch, virtual router, layer 3 filters (Security List, Network Security Group), DHCP, DNS, and NTP services, having external connectivity through NAT,  Internet, and Oracle Service Network (OSN) gateway. It functions as a software-defined network, enabling private and public subnet configurations within an isolated environment.
+
+DNS is a fundamental VCN embedded service providing name resolution of all systems connected to the VCN. DNS provides capabilities to serve custom DNS zones, forward requests to external DNS servers, and receive queries from them. Downstream and upstream communication is performed via interfaces with IP addresses. These interfaces are enabled on request. 
+
+DNS is a regional service, bound to a single region and not distributed in any form externally. Private Zones have two flavours: OCI and tenant managed. The former one constitutes name resolution foundation, providing always up-to-date physical layout of virtual networks, subnets, and connected systems. The latter one - opens for the tenant ability to model his own layout of private name resolution providing layer for flexible application configuration.
+
+----
+Exact representation of current state is guaranteed by OCI as a VNIC is an element that registers connected system in the local OCI Managed Private Zone. Architecture of strict association of VNIC and OCI Managed Private Zone provides fully automated name resolution representing actual layout of hosts in the networks. As OCI is fully responsible for management of these zones, it's not possible to update any records in them, what is marked in OCI by "protected" flag.
+----
+
+By default all the services are configured to use VCN's DNS server. This configuration is done via DHCP service, which setups them to use internal 169.254.169.254 address to reach DNS resolver.
+
+=== Failover support
+
+Ability to handle custom DNS zones makes it possible to establish foundation for failover and disaster recovery. General idea is that application level's well-known DNS global names are pointed to reginal services using CNAME records. This technique flawlessly connects application layer name space with fixed one represented by VCN managed resources.
+
+Tenant-managed zones are configured using one of available tools e.g. Terraform, CLI, Console, SDK, etc. to reflect actual location of the services. Sometimes may point to services in different regions to connect applications to active and standby nodes w/o really knowing where they physically run. In case of the region loss, application's layer name space need to be reconfigured to point all the services to disaster recovery location. This operation must be performed by one of available OCI configuration tools.
+
+While this technique does not support native zone replication, regional DNS records can still be consistently managed from a central location. This is often achieved by defining DNS configurations in a GitHub repository and using regional automation tools to propagate updates.
+
+XXX
+Note that VCN private DNS cannot act without external controller or client side logic as traffic management is not available for VCN's DNS. 
+
+It's required to employ DNS level service being able to direct DNS forwards to the proper VCN, in fact providing missing traffic management capability. On this stage customers employ Microsoft DNS service to fill this gap.
+
+----
+In theory, it's possible to to utilize private DNS servers available in multiple OCI regions, by registering all of them in operating system (e.g. /etc/resolv.conf on Linux) and let operating system react of server's unavailability. Theoretically operating system level configuration includes implicit health check reacting on failure of one of servers i.e. unavailability of the OCI region, however exact logic implemented in an operating system should be known before making decision to use this technique. Moreover different devices may behave in a different way, what makes this idea clearly impractical and purely theoretical.
+----
+
+== Missing OCI Realm, and Tenancy level name resolution
+
+OCI provides global public DNS service running on top of oc1 realm and private DNS servers being elements of each VCN. Due to regulatory and pragmatic reasons traffic management is not provided with each OCI realm e.g. DRCC private regions have no public DNS and no private traffic management is available.
+

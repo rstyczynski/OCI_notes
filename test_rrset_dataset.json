@@ -1,0 +1,14 @@
+[
+  {
+    "domain": "instance_1.example.com",
+    "rdata": "instance-1.subnet.vcn.oraclevcn.com.",
+    "rtype": "CNAME",
+    "ttl": 29629
+  },
+  {
+    "domain": "instance_2.example.com",
+    "rdata": "instance-2.subnet.vcn.oraclevcn.com.",
+    "rtype": "CNAME",
+    "ttl": 812
+  }
+]

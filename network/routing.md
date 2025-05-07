@@ -172,6 +172,6 @@ Having above diagram at your eyes with hidden vSwitch and vRouter inside of the 
 
 Few more secrets are still required to be unveiled, to fully understand what happens inside of the VCN's routing decisions.
 
-# Summary
+## Summary
 
 OCI routing is implemented following industry standard rules with exception of VCN CIDR route at VCN router. To understand the routing it's mandatory to remember about hidden VCN router and a subnet as group of hidden switch pots connected by switch virtual interface (SVI). Awareness of VCN router's hidden interfaces enables use of one simple rule that "route table is applied on interface's ingress traffic". The same applies to gateways route tables, which are associated with VCN router's gateway interface, and to DRG attachments.
