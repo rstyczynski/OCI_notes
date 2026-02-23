@@ -566,7 +566,7 @@ _function_info
 #
 # OCI wrapper to handle compartment URL
 #
-function oci { 
+function oci {
 : <<'_function_info'
 Wraper of oci CLI with support for:
 1. iam compartment set - to set working compartment.
@@ -576,10 +576,20 @@ _function_info
     if [ "$1 $2 $3" == "iam compartment set" ]; then
         oc iam compartment set "$4"
     else
-        # tip: replace --compartment-id URL with wrapper function
-        # shellcheck disable=SC2016
-        wrapped_CLI=$(echo "$@" | sed -E 's|--compartment-id ([/\.][A-Za-z0-9_.\/-]*)|--compartment-id $(get_compartment_id \1)|')
-        eval "$(which oci) $wrapped_CLI"
+        # Build args preserving quoting (do not use echo "$@" + eval: that strips quotes and breaks --body '{"key":"val"}')
+        local args=()
+        local oci_bin
+        oci_bin=$(which oci)
+        while [ $# -gt 0 ]; do
+            if [ "$1" = "--compartment-id" ] && [ $# -ge 2 ] && [[ "$2" =~ ^[/\.] ]]; then
+                args+=(--compartment-id "$(get_compartment_id "$2")")
+                shift 2
+            else
+                args+=("$1")
+                shift
+            fi
+        done
+        "$oci_bin" "${args[@]}"
     fi
 }
 alias oci=oci
